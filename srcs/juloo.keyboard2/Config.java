@@ -28,13 +28,17 @@ public final class Config
   public final float labelTextSize;
   public final float sublabelTextSize;
 
+  public final KeyboardData.Row bottom_row;
+  public final KeyboardData.Row number_row;
+  public final KeyboardData num_pad;
+
   // From preferences
   /** [null] represent the [system] layout. */
   public List<KeyboardData> layouts;
   public boolean show_numpad = false;
   // From the 'numpad_layout' option, also apply to the numeric pane.
   public boolean inverse_numpad = false;
-  public boolean number_row;
+  public boolean add_number_row;
   public float swipe_dist_px;
   public float slide_step_px;
   // Let the system handle vibration when false.
@@ -43,6 +47,7 @@ public final class Config
   public long vibrate_duration;
   public long longPressTimeout;
   public long longPressInterval;
+  public boolean keyrepeat_enabled;
   public float margin_bottom;
   public float keyHeight;
   public float horizontal_margin;
@@ -61,6 +66,8 @@ public final class Config
   public boolean switch_input_immediate;
   public boolean pin_entry_enabled;
   public boolean borderConfig;
+  public int circle_sensitivity;
+  public boolean clipboard_history_enabled;
 
   // Dynamically set
   public boolean shouldOfferVoiceTyping;
@@ -86,6 +93,16 @@ public final class Config
     keyPadding = res.getDimension(R.dimen.key_padding);
     labelTextSize = 0.33f;
     sublabelTextSize = 0.22f;
+    try
+    {
+      number_row = KeyboardData.load_number_row(res);
+      bottom_row = KeyboardData.load_bottom_row(res);
+      num_pad = KeyboardData.load_num_pad(res);
+    }
+    catch (Exception e)
+    {
+      throw new RuntimeException(e.getMessage()); // Not recoverable
+    }
     // from prefs
     refresh(res);
     // initialized later
@@ -123,7 +140,7 @@ public final class Config
     }
     layouts = LayoutsPreference.load_from_preferences(res, _prefs);
     inverse_numpad = _prefs.getString("numpad_layout", "default").equals("low_first");
-    number_row = _prefs.getBoolean("number_row", false);
+    add_number_row = _prefs.getBoolean("number_row", false);
     // The baseline for the swipe distance correspond to approximately the
     // width of a key in portrait mode, as most layouts have 10 columns.
     // Multipled by the DPI ratio because most swipes are made in the diagonals.
@@ -137,6 +154,7 @@ public final class Config
     vibrate_duration = _prefs.getInt("vibrate_duration", 20);
     longPressTimeout = _prefs.getInt("longpress_timeout", 600);
     longPressInterval = _prefs.getInt("longpress_interval", 65);
+    keyrepeat_enabled = _prefs.getBoolean("keyrepeat_enabled", true);
     margin_bottom = get_dip_pref_oriented(dm, "margin_bottom", 7, 3);
     key_vertical_margin = get_dip_pref(dm, "key_vertical_margin", 1.5f) / 100;
     key_horizontal_margin = get_dip_pref(dm, "key_horizontal_margin", 2) / 100;
@@ -167,6 +185,8 @@ public final class Config
     pin_entry_enabled = _prefs.getBoolean("pin_entry_enabled", true);
     current_layout_portrait = _prefs.getInt("current_layout_portrait", 0);
     current_layout_landscape = _prefs.getInt("current_layout_landscape", 0);
+    circle_sensitivity = Integer.valueOf(_prefs.getString("circle_sensitivity", "2"));
+    clipboard_history_enabled = _prefs.getBoolean("clipboard_history_enabled", false);
   }
 
   public int get_current_layout()
@@ -214,7 +234,7 @@ public final class Config
     extra_keys.put(KeyValue.getKeyByName("config"), KeyboardData.PreferredPos.ANYWHERE);
     extra_keys.putAll(extra_keys_param);
     extra_keys.putAll(extra_keys_custom);
-    if (extra_keys_subtype != null)
+    if (extra_keys_subtype != null && kw.locale_extra_keys)
     {
       Set<KeyValue> present = new HashSet<KeyValue>();
       present.addAll(kw.getKeys().keySet());
@@ -223,11 +243,13 @@ public final class Config
       extra_keys_subtype.compute(extra_keys,
           new ExtraKeys.Query(kw.script, present));
     }
-    KeyboardData.Row number_row = null;
-    if (this.number_row && !show_numpad)
-      number_row = modify_number_row(KeyboardData.number_row, kw);
-    if (number_row != null)
-      remove_keys.addAll(number_row.getKeys(0).keySet());
+    KeyboardData.Row added_number_row = null;
+    if (add_number_row && !show_numpad)
+      added_number_row = modify_number_row(number_row, kw);
+    if (added_number_row != null)
+      remove_keys.addAll(added_number_row.getKeys(0).keySet());
+    if (kw.bottom_row)
+      kw = kw.insert_row(bottom_row, kw.rows.size());
     kw = kw.mapKeys(new KeyboardData.MapKeyValues() {
       public KeyValue apply(KeyValue key, boolean localized)
       {
@@ -279,9 +301,9 @@ public final class Config
       }
     });
     if (show_numpad)
-      kw = kw.addNumPad(modify_numpad(KeyboardData.num_pad, kw));
-    if (number_row != null)
-      kw = kw.addTopRow(number_row);
+      kw = kw.addNumPad(modify_numpad(num_pad, kw));
+    if (added_number_row != null)
+      kw = kw.insert_row(added_number_row, 0);
     if (extra_keys.size() > 0)
       kw = kw.addExtraKeys(extra_keys.entrySet().iterator());
     return kw;
@@ -383,6 +405,7 @@ public final class Config
 
   private int getThemeId(Resources res, String theme_name)
   {
+    int night_mode = res.getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
     switch (theme_name)
     {
       case "light": return R.style.Light;
@@ -393,9 +416,14 @@ public final class Config
       case "epaper": return R.style.ePaper;
       case "desert": return R.style.Desert;
       case "jungle": return R.style.Jungle;
+      case "monetlight": return R.style.MonetLight;
+      case "monetdark": return R.style.MonetDark;
+      case "monet":
+        if ((night_mode & Configuration.UI_MODE_NIGHT_NO) != 0)
+          return R.style.MonetLight;
+        return R.style.MonetDark;
       default:
       case "system":
-        int night_mode = res.getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
         if ((night_mode & Configuration.UI_MODE_NIGHT_NO) != 0)
           return R.style.Light;
         return R.style.Dark;

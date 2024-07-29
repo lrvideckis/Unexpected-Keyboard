@@ -38,9 +38,10 @@
   <string name="pref_category_typing">Набор текста</string>
   <string name="pref_swipe_dist_title">Длина жеста</string>
   <string name="pref_swipe_dist_summary">Расстояние между символами в углах клавиш (%s)</string>
-  <string name="pref_long_timeout_title">Задержка повтора клавиш</string>
+  <string name="pref_long_timeout_title">Задержка долгого нажатия</string>
   <string name="pref_long_interval_title">Интервал повтора клавиш</string>
-  <string name="pref_lock_double_tap_title">Двойное нажатие Shift включает CapsLock</string>
+  <string name="pref_keyrepeat_enabled">Повтор клавиши при долгом нажатии</string>
+  <string name="pref_lock_double_tap_title">CapsLock двойным нажатием Shift</string>
   <string name="pref_lock_double_tap_summary">Также можно активировать модификатор долгим нажатием</string>
   <string name="pref_category_behavior">Поведение</string>
   <string name="pref_autocapitalisation_title">Автоматическая смена регистра</string>
@@ -67,6 +68,9 @@
   <string name="pref_theme_e_epaper">Электронная бумага</string>
   <string name="pref_theme_e_desert">Пустыня</string>
   <string name="pref_theme_e_jungle">Джунгли</string>
+  <string name="pref_theme_e_monet">Моне (системная)</string>
+  <string name="pref_theme_e_monetlight">Моне (светлая)</string>
+  <string name="pref_theme_e_monetdark">Моне (темная)</string>
   <string name="pref_swipe_dist_e_very_short">Очень короткая</string>
   <string name="pref_swipe_dist_e_short">Короткая</string>
   <string name="pref_swipe_dist_e_default">Обычная</string>
@@ -77,6 +81,11 @@
   <string name="pref_border_config_title">Настройка рамки</string>
   <string name="pref_border_width_title">Ширина рамки</string>
   <string name="pref_corners_radius_title">Радиус скругления</string>
+  <string name="pref_circle_sensitivity_title">Чувствительность круговых жестов</string>
+  <string name="pref_circle_sensitivity_e_high">Высокая</string>
+  <string name="pref_circle_sensitivity_e_medium">Средняя</string>
+  <string name="pref_circle_sensitivity_e_low">Низкая</string>
+  <string name="pref_circle_sensitivity_e_disabled">Отключено</string>
   <string name="key_action_next">Вперед</string>
   <string name="key_action_done">Ввод</string>
   <string name="key_action_go">Перейти</string>
@@ -110,4 +119,9 @@
   <string name="key_descr_page_down">Страница вниз</string>
   <string name="key_descr_home">Home</string>
   <string name="key_descr_end">End</string>
+  <string name="key_descr_clipboard">Менеджер буфера обмена</string>
+  <string name="clipboard_history_heading">Недавно скопированный текст</string>
+  <string name="clipboard_pin_heading">Закреплено</string>
+  <string name="clipboard_remove_confirm">Удалить этот буфер обмена?</string>
+  <string name="clipboard_remove_confirmed">Да</string>
 </resources>

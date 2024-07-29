@@ -17,6 +17,7 @@
     <item>beng_provat</item>
     <item>cyrl_jcuken_ru</item>
     <item>cyrl_jcuken_uk</item>
+    <item>cyrl_lynyertz_sr</item>
     <item>cyrl_ueishsht</item>
     <item>cyrl_yaverti</item>
     <item>deva_alt</item>
@@ -42,6 +43,7 @@
     <item>latn_qwerty_ro</item>
     <item>latn_qwerty_se</item>
     <item>latn_qwerty_sk</item>
+    <item>latn_qwerty_sr</item>
     <item>latn_qwerty_tly</item>
     <item>latn_qwerty_tr</item>
     <item>latn_qwerty_vi</item>
@@ -72,6 +74,7 @@
     <item>বাংলা (প্রভাত)</item>
     <item>ЙЦУКЕН (Русский)</item>
     <item>ЙЦУКЕН (Українська)</item>
+    <item>ЉЊЕРТЗ (Српски)</item>
     <item>УЕИШЩ (Български, БДС)</item>
     <item>ЯВЕРТЪ</item>
     <item>देवनागरी (हिंदी)-2</item>
@@ -97,6 +100,7 @@
     <item>QWERTY (Română)</item>
     <item>QWERTY (Swedish)</item>
     <item>QWERTY (Slovak)</item>
+    <item>QWERTY (Srpski, latinica)</item>
     <item>QWERTY (Talysh New Latin)</item>
     <item>QWERTY (Türkçe)</item>
     <item>QWERTY (Vietnamese)</item>
@@ -127,6 +131,7 @@
     <item>@xml/beng_provat</item>
     <item>@xml/cyrl_jcuken_ru</item>
     <item>@xml/cyrl_jcuken_uk</item>
+    <item>@xml/cyrl_lynyertz_sr</item>
     <item>@xml/cyrl_ueishsht</item>
     <item>@xml/cyrl_yaverti</item>
     <item>@xml/deva_alt</item>
@@ -152,6 +157,7 @@
     <item>@xml/latn_qwerty_ro</item>
     <item>@xml/latn_qwerty_se</item>
     <item>@xml/latn_qwerty_sk</item>
+    <item>@xml/latn_qwerty_sr</item>
     <item>@xml/latn_qwerty_tly</item>
     <item>@xml/latn_qwerty_tr</item>
     <item>@xml/latn_qwerty_vi</item>

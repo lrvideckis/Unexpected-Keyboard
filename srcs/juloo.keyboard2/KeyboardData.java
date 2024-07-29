@@ -29,6 +29,10 @@ public final class KeyboardData
   public final String numpad_script;
   /** The [name] attribute. Might be null.  */
   public final String name;
+  /** Whether the bottom row should be added. */
+  public final boolean bottom_row;
+  /** Whether extra keys from [method.xml] should be added to this layout. */
+  public final boolean locale_extra_keys;
   /** Position of every keys on the layout, see [getKeys()]. */
   private Map<KeyValue, KeyPos> _key_pos = null;
 
@@ -65,9 +69,17 @@ public final class KeyboardData
     if (pos.next_to != null)
     {
       KeyPos next_to_pos = getKeys().get(pos.next_to);
-      if (next_to_pos != null
-          && add_key_to_pos(rows, kv, next_to_pos.with_dir(-1)))
-        return true;
+      // Use preferred direction if some preferred pos match
+      if (next_to_pos != null)
+      {
+        for (KeyPos p : pos.positions)
+          if ((p.row == -1 || p.row == next_to_pos.row)
+              && (p.col == -1 || p.col == next_to_pos.col)
+              && add_key_to_pos(rows, kv, next_to_pos.with_dir(p.dir)))
+            return true;
+        if (add_key_to_pos(rows, kv, next_to_pos.with_dir(-1)))
+          return true;
+      }
     }
     for (KeyPos p : pos.positions)
       if (add_key_to_pos(rows, kv, p))
@@ -82,13 +94,13 @@ public final class KeyboardData
   boolean add_key_to_pos(List<Row> rows, KeyValue kv, KeyPos p)
   {
     int i_row = p.row;
-    int i_row_end = Math.min(p.row, rows.size());
+    int i_row_end = Math.min(p.row, rows.size() - 1);
     if (p.row == -1) { i_row = 0; i_row_end = rows.size() - 1; }
     for (; i_row <= i_row_end; i_row++)
     {
       Row row = rows.get(i_row);
       int i_col = p.col;
-      int i_col_end = p.col;
+      int i_col_end = Math.min(p.col, row.keys.size() - 1);
       if (p.col == -1) { i_col = 0; i_col_end = row.keys.size() - 1; }
       for (; i_col <= i_col_end; i_col++)
       {
@@ -132,10 +144,12 @@ public final class KeyboardData
     return new KeyboardData(this, extendedRows);
   }
 
-  public KeyboardData addTopRow(Row row)
+  /** Insert the given row at the given indice. The row is scaled so that the
+      keys already on the keyboard don't change width. */
+  public KeyboardData insert_row(Row row, int i)
   {
     ArrayList<Row> rows_ = new ArrayList<Row>(this.rows);
-    rows_.add(0, row.updateWidth(keysWidth));
+    rows_.add(i, row.updateWidth(keysWidth));
     return new KeyboardData(this, rows_);
   }
 
@@ -159,23 +173,21 @@ public final class KeyboardData
     return _key_pos;
   }
 
-  public static Row bottom_row;
-  public static Row number_row;
-  public static KeyboardData num_pad;
   private static Map<Integer, KeyboardData> _layoutCache = new HashMap<Integer, KeyboardData>();
 
-  public static void init(Resources res)
+  public static Row load_bottom_row(Resources res) throws Exception
   {
-    try
-    {
-      bottom_row = parse_row(res.getXml(R.xml.bottom_row));
-      number_row = parse_row(res.getXml(R.xml.number_row));
-      num_pad = parse_keyboard(res.getXml(R.xml.numpad));
-    }
-    catch (Exception e)
-    {
-      e.printStackTrace();
-    }
+    return parse_row(res.getXml(R.xml.bottom_row));
+  }
+
+  public static Row load_number_row(Resources res) throws Exception
+  {
+    return parse_row(res.getXml(R.xml.number_row));
+  }
+
+  public static KeyboardData load_num_pad(Resources res) throws Exception
+  {
+    return parse_keyboard(res.getXml(R.xml.numpad));
   }
 
   /** Load a layout from a resource ID. Returns [null] on error. */
@@ -225,12 +237,17 @@ public final class KeyboardData
   {
     if (!expect_tag(parser, "keyboard"))
       throw error(parser, "Expected tag <keyboard>");
-    boolean add_bottom_row = attribute_bool(parser, "bottom_row", true);
+    boolean bottom_row = attribute_bool(parser, "bottom_row", true);
+    boolean locale_extra_keys = attribute_bool(parser, "locale_extra_keys", true);
     float specified_kw = attribute_float(parser, "width", 0f);
     String script = parser.getAttributeValue(null, "script");
+    if (script != null && script.equals(""))
+      throw error(parser, "'script' attribute cannot be empty");
     String numpad_script = parser.getAttributeValue(null, "numpad_script");
     if (numpad_script == null)
       numpad_script = script;
+    else if (numpad_script.equals(""))
+      throw error(parser, "'numpad_script' attribute cannot be empty");
     String name = parser.getAttributeValue(null, "name");
     ArrayList<Row> rows = new ArrayList<Row>();
     Modmap modmap = null;
@@ -242,6 +259,8 @@ public final class KeyboardData
           rows.add(Row.parse(parser));
           break;
         case "modmap":
+          if (modmap != null)
+            throw error(parser, "Multiple '<modmap>' are not allowed");
           modmap = Modmap.parse(parser);
           break;
         default:
@@ -249,9 +268,7 @@ public final class KeyboardData
       }
     }
     float kw = (specified_kw != 0f) ? specified_kw : compute_max_width(rows);
-    if (add_bottom_row)
-      rows.add(bottom_row.updateWidth(kw));
-    return new KeyboardData(rows, kw, modmap, script, numpad_script, name);
+    return new KeyboardData(rows, kw, modmap, script, numpad_script, name, bottom_row, locale_extra_keys);
   }
 
   private static float compute_max_width(List<Row> rows)
@@ -270,7 +287,7 @@ public final class KeyboardData
   }
 
   protected KeyboardData(List<Row> rows_, float kw, Modmap mm, String sc,
-      String npsc, String name_)
+      String npsc, String name_, boolean bottom_row_, boolean locale_extra_keys_)
   {
     float kh = 0.f;
     for (Row r : rows_)
@@ -280,15 +297,17 @@ public final class KeyboardData
     script = sc;
     numpad_script = npsc;
     name = name_;
-    keysWidth = kw;
+    keysWidth = Math.max(kw, 1f);
     keysHeight = kh;
+    bottom_row = bottom_row_;
+    locale_extra_keys = locale_extra_keys_;
   }
 
-  /** Copies the fields of an other keyboard, with rows changed. */
+  /** Copies the fields of a keyboard, with rows changed. */
   protected KeyboardData(KeyboardData src, List<Row> rows)
   {
     this(rows, compute_max_width(rows), src.modmap, src.script,
-        src.numpad_script, src.name);
+        src.numpad_script, src.name, src.bottom_row, src.locale_extra_keys);
   }
 
   public static class Row
@@ -306,8 +325,8 @@ public final class KeyboardData
       float kw = 0.f;
       for (Key k : keys_) kw += k.width + k.shift;
       keys = keys_;
-      height = h;
-      shift = s;
+      height = Math.max(h, 0.5f);
+      shift = Math.max(s, 0f);
       keysWidth = kw;
     }
 
@@ -373,6 +392,8 @@ public final class KeyboardData
      *  3 8 4
      */
     public final KeyValue[] keys;
+    /** Key accessed by the anti-clockwise circle gesture. */
+    public final KeyValue anticircle;
     /** Pack flags for every key values. Flags are: [F_LOC]. */
     private final int keysflags;
     /** Key width in relative unit. */
@@ -389,12 +410,13 @@ public final class KeyboardData
     public static final int F_LOC = 1;
     public static final int ALL_FLAGS = F_LOC;
 
-    protected Key(KeyValue[] ks, int f, float w, float s, boolean sl, String i)
+    protected Key(KeyValue[] ks, KeyValue antic, int f, float w, float s, boolean sl, String i)
     {
       keys = ks;
+      anticircle = antic;
       keysflags = f;
-      width = w;
-      shift = s;
+      width = Math.max(w, 0f);
+      shift = Math.max(s, 0f);
       slider = sl;
       indication = i;
     }
@@ -433,6 +455,14 @@ public final class KeyboardData
       return (flags << index);
     }
 
+    static KeyValue parse_nonloc_key_attr(XmlPullParser parser, String attr_name) throws Exception
+    {
+      String name = parser.getAttributeValue(null, attr_name);
+      if (name == null)
+        return null;
+      return KeyValue.getKeyByName(name);
+    }
+
     static String stripPrefix(String s, String prefix)
     {
       return s.startsWith(prefix) ? s.substring(prefix.length()) : null;
@@ -453,13 +483,14 @@ public final class KeyboardData
       keysflags |= parse_key_attr(parser, get_key_attr(parser, "key7", "n"), ks, 7);
       keysflags |= parse_key_attr(parser, get_key_attr(parser, "key8", "s"), ks, 8);
       /* Other key attributes */
+      KeyValue anticircle = parse_nonloc_key_attr(parser, "anticircle");
       float width = attribute_float(parser, "width", 1f);
       float shift = attribute_float(parser, "shift", 0.f);
       boolean slider = attribute_bool(parser, "slider", false);
       String indication = parser.getAttributeValue(null, "indication");
       while (parser.next() != XmlPullParser.END_TAG)
         continue;
-      return new Key(ks, keysflags, width, shift, slider, indication);
+      return new Key(ks, anticircle, keysflags, width, shift, slider, indication);
     }
 
     /** Whether key at [index] as [flag]. */
@@ -471,7 +502,8 @@ public final class KeyboardData
     /** New key with the width multiplied by 's'. */
     public Key scaleWidth(float s)
     {
-      return new Key(keys, keysflags, width * s, shift, slider, indication);
+      return new Key(keys, anticircle, keysflags, width * s, shift, slider,
+          indication);
     }
 
     public void getKeys(Map<KeyValue, KeyPos> dst, int row, int col)
@@ -492,12 +524,12 @@ public final class KeyboardData
       for (int j = 0; j < keys.length; j++) ks[j] = keys[j];
       ks[i] = kv;
       int flags = (keysflags & ~(ALL_FLAGS << i));
-      return new Key(ks, flags, width, shift, slider, indication);
+      return new Key(ks, anticircle, flags, width, shift, slider, indication);
     }
 
     public Key withShift(float s)
     {
-      return new Key(keys, keysflags, width, s, slider, indication);
+      return new Key(keys, anticircle, keysflags, width, s, slider, indication);
     }
 
     public boolean hasValue(KeyValue kv)
@@ -523,7 +555,7 @@ public final class KeyboardData
       for (int i = 0; i < ks.length; i++)
         if (k.keys[i] != null)
           ks[i] = apply(k.keys[i], k.keyHasFlag(i, Key.F_LOC));
-      return new Key(ks, k.keysflags, k.width, k.shift, k.slider, k.indication);
+      return new Key(ks, k.anticircle, k.keysflags, k.width, k.shift, k.slider, k.indication);
     }
   }
 
@@ -531,18 +563,20 @@ public final class KeyboardData
   {
     public final Map<KeyValue, KeyValue> shift;
     public final Map<KeyValue, KeyValue> fn;
+    public final Map<KeyValue, KeyValue> ctrl;
 
-    public Modmap(Map<KeyValue, KeyValue> s, Map<KeyValue, KeyValue> f)
+    public Modmap(Map<KeyValue, KeyValue> s, Map<KeyValue, KeyValue> f, Map<KeyValue, KeyValue> c)
     {
       shift = s;
       fn = f;
+      ctrl = c;
     }
 
     public static Modmap parse(XmlPullParser parser) throws Exception
     {
       HashMap<KeyValue, KeyValue> shift = new HashMap<KeyValue, KeyValue>();
       HashMap<KeyValue, KeyValue> fn = new HashMap<KeyValue, KeyValue>();
-
+      HashMap<KeyValue, KeyValue> ctrl = new HashMap<KeyValue, KeyValue>();
       while (next_tag(parser))
       {
         switch (parser.getName())
@@ -553,12 +587,15 @@ public final class KeyboardData
           case "fn":
             parse_mapping(parser, fn);
             break;
+          case "ctrl":
+            parse_mapping(parser, ctrl);
+            break;
           default:
             throw error(parser, "Expecting tag <shift> or <fn>, got <" + parser.getName() + ">");
         }
       }
 
-      return new Modmap(shift, fn);
+      return new Modmap(shift, fn, ctrl);
     }
 
     private static void parse_mapping(XmlPullParser parser, Map<KeyValue, KeyValue> dst) throws Exception
@@ -594,6 +631,7 @@ public final class KeyboardData
   /** See [addExtraKeys()]. */
   public final static class PreferredPos
   {
+    /** Default position for extra keys. */
     public static final PreferredPos DEFAULT;
     public static final PreferredPos ANYWHERE;
 
@@ -608,6 +646,9 @@ public final class KeyboardData
     public KeyPos[] positions = ANYWHERE_POSITIONS;
 
     public PreferredPos() {}
+    public PreferredPos(KeyValue next_to_) { next_to = next_to_; }
+    public PreferredPos(KeyPos[] pos) { positions = pos; }
+    public PreferredPos(KeyValue next_to_, KeyPos[] pos) { next_to = next_to_; positions = pos; }
 
     public PreferredPos(PreferredPos src)
     {
@@ -620,13 +661,12 @@ public final class KeyboardData
 
     static
     {
-      DEFAULT = new PreferredPos();
-      DEFAULT.positions = new KeyPos[]{
-        new KeyPos(1, -1, 4),
-        new KeyPos(1, -1, 3),
-        new KeyPos(2, -1, 2),
-        new KeyPos(2, -1, 1)
-      };
+      DEFAULT = new PreferredPos(new KeyPos[]{
+          new KeyPos(1, -1, 4),
+          new KeyPos(1, -1, 3),
+          new KeyPos(2, -1, 2),
+          new KeyPos(2, -1, 1)
+        });
       ANYWHERE = new PreferredPos();
     }
   }

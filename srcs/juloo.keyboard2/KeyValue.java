@@ -12,6 +12,8 @@ public final class KeyValue implements Comparable<KeyValue>
     SWITCH_NUMERIC,
     SWITCH_EMOJI,
     SWITCH_BACK_EMOJI,
+    SWITCH_CLIPBOARD,
+    SWITCH_BACK_CLIPBOARD,
     CHANGE_METHOD_PICKER,
     CHANGE_METHOD_AUTO,
     ACTION,
@@ -27,6 +29,7 @@ public final class KeyValue implements Comparable<KeyValue>
   public static enum Modifier
   {
     SHIFT,
+    GESTURE,
     CTRL,
     ALT,
     META,
@@ -54,8 +57,8 @@ public final class KeyValue implements Comparable<KeyValue>
     ARROW_RIGHT,
     BREVE,
     BAR,
-    FN, // Must be placed last to be applied first
-  }
+    FN,
+  } // Last is be applied first
 
   public static enum Editing
   {
@@ -404,6 +407,12 @@ public final class KeyValue implements Comparable<KeyValue>
       return new KeyValue(str, Kind.String, 0, flags | FLAG_SMALLER_FONT);
   }
 
+  /** Make a modifier key for passing to [KeyModifier]. */
+  public static KeyValue makeInternalModifier(Modifier mod)
+  {
+    return new KeyValue("", Kind.Modifier, mod.ordinal(), 0);
+  }
+
   public static KeyValue getKeyByName(String name)
   {
     switch (name)
@@ -453,6 +462,8 @@ public final class KeyValue implements Comparable<KeyValue>
       case "switch_numeric": return eventKey("123+", Event.SWITCH_NUMERIC, FLAG_SMALLER_FONT);
       case "switch_emoji": return eventKey(0xE001, Event.SWITCH_EMOJI, FLAG_SMALLER_FONT);
       case "switch_back_emoji": return eventKey("ABC", Event.SWITCH_BACK_EMOJI, 0);
+      case "switch_clipboard": return eventKey(0xE017, Event.SWITCH_CLIPBOARD, 0);
+      case "switch_back_clipboard": return eventKey("ABC", Event.SWITCH_BACK_CLIPBOARD, 0);
       case "switch_forward": return eventKey(0xE013, Event.SWITCH_FORWARD, FLAG_SMALLER_FONT);
       case "switch_backward": return eventKey(0xE014, Event.SWITCH_BACKWARD, FLAG_SMALLER_FONT);
       case "switch_greekmath": return eventKey("πλ∇¬", Event.SWITCH_GREEKMATH, FLAG_SMALLER_FONT);
@@ -490,12 +501,14 @@ public final class KeyValue implements Comparable<KeyValue>
       case "f11": return keyeventKey("F11", KeyEvent.KEYCODE_F11, FLAG_SMALLER_FONT);
       case "f12": return keyeventKey("F12", KeyEvent.KEYCODE_F12, FLAG_SMALLER_FONT);
       case "tab": return keyeventKey(0xE00F, KeyEvent.KEYCODE_TAB, FLAG_SMALLER_FONT);
+      case "menu": return keyeventKey("Menu", KeyEvent.KEYCODE_MENU, FLAG_SMALLER_FONT);
 
       /* Spaces */
       case "\\t": return charKey("\\t", '\t', 0); // Send the tab character
       case "\\n": return charKey("\\n", '\n', 0); // Send the newline character
       case "space": return charKey(0xE00D, ' ', FLAG_KEY_FONT | FLAG_SMALLER_FONT | FLAG_GREYED);
       case "nbsp": return charKey("\u237d", '\u00a0', FLAG_SMALLER_FONT);
+      case "nnbsp": return charKey("\u2423", '\u202F', FLAG_SMALLER_FONT);
 
       /* bidi */
       case "lrm": return charKey("↱", '\u200e', 0); // Send left-to-right mark
@@ -538,7 +551,8 @@ public final class KeyValue implements Comparable<KeyValue>
       case "meteg_placeholder": return placeholderKey(Placeholder.METEG);
       /* intending/preventing ligature - supported by many scripts*/
       case "zwj": return charKey("zwj", '\u200D', 0); // zero-width joiner (provides ligature)
-      case "zwnj": return charKey("zwnj", '\u200C', 0); // zero-width non joiner (prevents unintended ligature)
+      case "zwnj":
+      case "halfspace": return charKey("⸽", '\u200C', 0); // zero-width non joiner
 
       /* Editing keys */
       case "copy": return editingKey(0xE030, Editing.COPY);
@@ -557,7 +571,7 @@ public final class KeyValue implements Comparable<KeyValue>
       case "autofill": return editingKey("auto", Editing.AUTOFILL);
 
       /* The compose key */
-      case "compose": return makeComposePending(0xE016, 0, FLAG_SECONDARY | FLAG_SMALLER_FONT | FLAG_SPECIAL);
+      case "compose": return makeComposePending(0xE016, ComposeKeyData.compose, FLAG_SECONDARY | FLAG_SMALLER_FONT | FLAG_SPECIAL);
 
       /* Placeholder keys */
       case "removed": return placeholderKey(Placeholder.REMOVED);

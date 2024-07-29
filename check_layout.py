@@ -6,7 +6,14 @@ warning_count = 0
 KNOWN_NOT_LAYOUT = set([
     "number_row", "numpad", "pin",
     "bottom_row", "settings", "method",
-    "greekmath", "numeric", "emoji_bottom_row" ])
+    "greekmath", "numeric", "emoji_bottom_row",
+    "clipboard_bottom_row" ])
+
+KEY_ATTRIBUTES = set([
+    "key0",
+    "key1", "key2", "key3", "key4", "key5", "key6", "key7", "key8",
+    "nw", "ne", "sw", "se", "w", "e", "n", "s"
+    ])
 
 def warn(msg):
     global warning_count
@@ -38,7 +45,7 @@ def unexpected_keys(keys, symbols, msg):
 def parse_row_from_et(row, keys, dup):
     for key in row:
         for attr in key.keys():
-            if attr.startswith("key"):
+            if attr in KEY_ATTRIBUTES:
                 k = key.get(attr).removeprefix("\\")
                 if k in keys: dup.add(k)
                 keys.add(k)
@@ -68,8 +75,7 @@ def check_layout(layout):
     missing_some_of(keys, "~!@#$%^&*(){}`[]=\\-_;:/.,?<>'\"+|", "ASCII punctuation")
     missing_some_of(keys, "0123456789", "digits")
     missing_required(keys,
-                     ["esc", "tab", "backspace", "delete",
-                      "f11_placeholder", "f12_placeholder"],
+                     ["loc esc", "loc tab", "backspace", "delete"],
                      "Layout doesn't define some important keys")
     unexpected_keys(keys,
                     ["copy", "paste", "cut", "selectAll", "shareText",
@@ -82,6 +88,7 @@ def check_layout(layout):
     unexpected_keys(keys, [""], "Layout contains empty strings")
     unexpected_keys(keys, ["loc"], "Special keyword cannot be a symbol")
     unexpected_keys(keys, filter(lambda k: k.strip()!=k, keys), "Some keys contain whitespaces")
+    unexpected_keys(keys, ["f11_placeholder", "f12_placeholder"], "These keys are now added automatically")
 
     _, bottom_row_keys, _ = parse_row("res/xml/bottom_row.xml")
 

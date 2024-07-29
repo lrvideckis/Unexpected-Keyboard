@@ -36,6 +36,7 @@ public class Keyboard2 extends InputMethodService
   /** Layout associated with the currently selected locale. Not 'null'. */
   private KeyboardData _localeTextLayout;
   private ViewGroup _emojiPane = null;
+  private ViewGroup _clipboard_pane = null;
   public int actionId; // Action performed by the Action key.
 
   private Config _config;
@@ -105,7 +106,6 @@ public class Keyboard2 extends InputMethodService
   public void onCreate()
   {
     super.onCreate();
-    KeyboardData.init(getResources());
     SharedPreferences prefs = DirectBootAwarePreferences.get_shared_preferences(this);
     _keyeventhandler = new KeyEventHandler(getMainLooper(), this.new Receiver());
     Config.initGlobalConfig(prefs, getResources(), _keyeventhandler);
@@ -114,6 +114,7 @@ public class Keyboard2 extends InputMethodService
     _keyboardView = (Keyboard2View)inflate_view(R.layout.keyboard);
     _keyboardView.reset();
     Logs.set_debug_logs(getResources().getBoolean(R.bool.debug_logs));
+    ClipboardHistoryService.on_startup(this, _keyeventhandler);
   }
 
   private List<InputMethodSubtype> getEnabledSubtypes(InputMethodManager imm)
@@ -135,13 +136,9 @@ public class Keyboard2 extends InputMethodService
     return ExtraKeys.EMPTY;
   }
 
-  @TargetApi(12)
-  private void refreshAccentsOption(InputMethodManager imm, InputMethodSubtype subtype)
+  private void refreshAccentsOption(InputMethodManager imm, List<InputMethodSubtype> enabled_subtypes)
   {
-    List<InputMethodSubtype> enabled_subtypes = getEnabledSubtypes(imm);
     List<ExtraKeys> extra_keys = new ArrayList<ExtraKeys>();
-    // Gather extra keys from all enabled subtypes
-    extra_keys.add(extra_keys_of_subtype(subtype));
     for (InputMethodSubtype s : enabled_subtypes)
       extra_keys.add(extra_keys_of_subtype(s));
     _config.extra_keys_subtype = ExtraKeys.merge(extra_keys);
@@ -152,6 +149,20 @@ public class Keyboard2 extends InputMethodService
     return (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
   }
 
+  @TargetApi(12)
+  private InputMethodSubtype defaultSubtypes(InputMethodManager imm, List<InputMethodSubtype> enabled_subtypes)
+  {
+    if (VERSION.SDK_INT < 24)
+      return imm.getCurrentInputMethodSubtype();
+    // Android might return a random subtype, for example, the first in the
+    // list alphabetically.
+    InputMethodSubtype current_subtype = imm.getCurrentInputMethodSubtype();
+    for (InputMethodSubtype s : enabled_subtypes)
+      if (s.getLanguageTag().equals(current_subtype.getLanguageTag()))
+        return s;
+    return null;
+  }
+
   private void refreshSubtypeImm()
   {
     InputMethodManager imm = get_imm();
@@ -160,13 +171,14 @@ public class Keyboard2 extends InputMethodService
     _config.extra_keys_subtype = null;
     if (VERSION.SDK_INT >= 12)
     {
-      InputMethodSubtype subtype = imm.getCurrentInputMethodSubtype();
+      List<InputMethodSubtype> enabled_subtypes = getEnabledSubtypes(imm);
+      InputMethodSubtype subtype = defaultSubtypes(imm, enabled_subtypes);
       if (subtype != null)
       {
         String s = subtype.getExtraValueOf("default_layout");
         if (s != null)
           default_layout = LayoutsPreference.layout_of_string(getResources(), s);
-        refreshAccentsOption(imm, subtype);
+        refreshAccentsOption(imm, enabled_subtypes);
       }
     }
     if (default_layout == null)
@@ -224,6 +236,8 @@ public class Keyboard2 extends InputMethodService
     {
       _keyboardView = (Keyboard2View)inflate_view(R.layout.keyboard);
       _emojiPane = null;
+      _clipboard_pane = null;
+      setInputView(_keyboardView);
     }
     _keyboardView.reset();
   }
@@ -346,7 +360,6 @@ public class Keyboard2 extends InputMethodService
   public void onSharedPreferenceChanged(SharedPreferences _prefs, String _key)
   {
     refresh_config();
-    setInputView(_keyboardView);
     _keyboardView.setKeyboard(current_layout());
   }
 
@@ -385,7 +398,14 @@ public class Keyboard2 extends InputMethodService
           setInputView(_emojiPane);
           break;
 
+        case SWITCH_CLIPBOARD:
+          if (_clipboard_pane == null)
+            _clipboard_pane = (ViewGroup)inflate_view(R.layout.clipboard_pane);
+          setInputView(_clipboard_pane);
+          break;
+
         case SWITCH_BACK_EMOJI:
+        case SWITCH_BACK_CLIPBOARD:
           setInputView(_keyboardView);
           break;
 

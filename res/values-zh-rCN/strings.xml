@@ -38,8 +38,9 @@
   <string name="pref_category_typing">输入</string>
   <string name="pref_swipe_dist_title">滑动触发距离</string>
   <string name="pref_swipe_dist_summary">输入按键四角的符号需要滑动的距离 (%s)</string>
-  <string name="pref_long_timeout_title">长按到开始重复输入的时间</string>
+  <!-- <string name="pref_long_timeout_title">Long press timeout</string> -->
   <string name="pref_long_interval_title">长按后每次重复输入的时间间隔</string>
+  <!-- <string name="pref_keyrepeat_enabled">Key repeat on long press</string> -->
   <string name="pref_lock_double_tap_title">双击 Shift 键锁定大写</string>
   <string name="pref_lock_double_tap_summary">任何时候长按修饰键均可将其锁定</string>
   <string name="pref_category_behavior">行为</string>
@@ -67,6 +68,9 @@
   <string name="pref_theme_e_epaper">白色带边框</string>
   <string name="pref_theme_e_desert">沙漠</string>
   <string name="pref_theme_e_jungle">雨林</string>
+  <!-- <string name="pref_theme_e_monet">Monet (System)</string> -->
+  <!-- <string name="pref_theme_e_monetlight">Monet (Light)</string> -->
+  <!-- <string name="pref_theme_e_monetdark">Monet (Dark)</string> -->
   <string name="pref_swipe_dist_e_very_short">非常短</string>
   <string name="pref_swipe_dist_e_short">短</string>
   <string name="pref_swipe_dist_e_default">中（默认）</string>
@@ -77,6 +81,11 @@
   <string name="pref_border_config_title">自定义边界</string>
   <string name="pref_border_width_title">边界宽度</string>
   <string name="pref_corners_radius_title">圆角半径</string>
+  <!-- <string name="pref_circle_sensitivity_title">Circle gesture sensitivity</string> -->
+  <!-- <string name="pref_circle_sensitivity_e_high">High</string> -->
+  <!-- <string name="pref_circle_sensitivity_e_medium">Medium</string> -->
+  <!-- <string name="pref_circle_sensitivity_e_low">Low</string> -->
+  <!-- <string name="pref_circle_sensitivity_e_disabled">Disabled</string> -->
   <string name="key_action_next">下一项</string>
   <string name="key_action_done">完成</string>
   <string name="key_action_go">前往</string>
@@ -110,4 +119,9 @@
   <string name="key_descr_page_down">下一页</string>
   <string name="key_descr_home">Home</string>
   <string name="key_descr_end">End</string>
+  <!-- <string name="key_descr_clipboard">Clipboard manager</string> -->
+  <!-- <string name="clipboard_history_heading">Recently copied text</string> -->
+  <!-- <string name="clipboard_pin_heading">Pinned</string> -->
+  <!-- <string name="clipboard_remove_confirm">Remove this clipboard?</string> -->
+  <!-- <string name="clipboard_remove_confirmed">Yes</string> -->
 </resources>

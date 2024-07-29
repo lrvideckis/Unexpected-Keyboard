@@ -4,14 +4,14 @@ plugins {
 
 android {
   namespace 'juloo.keyboard2'
-  compileSdk 33
+  compileSdk 34
 
   defaultConfig {
     applicationId "juloo.keyboard2"
     minSdk 11
-    targetSdkVersion 33
-    versionCode 39
-    versionName "1.27.0"
+    targetSdkVersion 35
+    versionCode 42
+    versionName "1.29.1"
   }
 
   sourceSets {
@@ -151,7 +151,7 @@ tasks.register('compileComposeSequences') {
   println "\nGenerating ${out}"
   exec {
     def sequences = new File(projectDir, "srcs/compose").listFiles().findAll {
-      it.name.endsWith(".pre") || it.name.endsWith(".json")
+      !it.name.endsWith(".py") && !it.name.endsWith(".md")
     }
     workingDir = projectDir
     commandLine("python", "srcs/compose/compile.py", *sequences)
