@@ -77,11 +77,10 @@ android {
     sourceCompatibility JavaVersion.VERSION_1_7
     targetCompatibility JavaVersion.VERSION_1_7
   }
+    lint {
+        disable 'MissingTranslation'
+    }
 
-  lintOptions {
-    // Translation are already checked by 'syncTranslations'
-    disable 'MissingTranslation'
-  }
 }
 
 dependencies {

@@ -10,12 +10,12 @@
     <key              width="0.9" key0="ह" key1="श" key2="ळ" key3="स"  key4="ष"/>
   </row>
   <row>
-    <key shift="0.35" width="0.9" key0="ा" key1="अ" key2="आ" key8="झंव"/>
-    <key              width="0.9" key0="ि" key1="इ" key8="बायेक"/>
-    <key              width="0.9" key0="ी" key1="ई" key8="चेडियेच्या"/>
-    <key              width="0.9" key0="ु" key1="उ" key2="ऊ" key4="ू"/>
-    <key              width="0.9" key0="े" key1="ए" key2="ऋ" key4="ृ"/>
-    <key              width="0.9" key0="ै" key1="ऐ" key2="ऌ" key4="ॢ"/>
+    <key shift="0.35" width="0.9" key0="ा" key1="अ" key2="आ"/>
+    <key              width="0.9" key0="ि" key1="इ"/>
+    <key              width="0.9" key0="ी" key1="ई"/>
+    <key              width="0.9" key0="ु" key1="उ" key2="ऊ" key4="ू" key3="झंव"/>
+    <key              width="0.9" key0="े" key1="ए" key2="ऋ" key4="ृ" key3="बायेक"/>
+    <key              width="0.9" key0="ै" key1="ऐ" key2="ऌ" key4="ॢ" key3="चेडियेच्या"/>
     <key              width="0.9" key0="ो" key1="ओ" key2="औ" key4="ौ"/>
   </row>
   <row>
