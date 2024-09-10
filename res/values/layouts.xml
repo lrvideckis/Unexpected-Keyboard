@@ -6,6 +6,7 @@
     <item>latn_qwerty_us</item>
     <item>latn_colemak</item>
     <item>latn_dvorak</item>
+    <item>messagease_inspired</item>
     <item>arab_alt</item>
     <item>arab_hamvaj_tly</item>
     <item>arab_pc</item>
@@ -64,6 +65,7 @@
     <item>QWERTY (US)</item>
     <item>Colemak</item>
     <item>Dvorak</item>
+    <item>MessagEase Inspired</item>
     <item>Arabic Alt</item>
     <item>Talysh (تالشی همواج)</item>
     <item>Arabic PC</item>
@@ -122,6 +124,7 @@
     <item>@xml/latn_qwerty_us</item>
     <item>@xml/latn_colemak</item>
     <item>@xml/latn_dvorak</item>
+    <item>@xml/messagease_inspired</item>
     <item>@xml/arab_alt</item>
     <item>@xml/arab_hamvaj_tly</item>
     <item>@xml/arab_pc</item>
