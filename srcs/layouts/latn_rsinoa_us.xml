@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This file defines the QWERTY layout.
+  1 7 2
+  5 0 6
+  3 8 4
+-->
+<keyboard name="RSINOA" script="latin">
+  <row>
+    <key shift="1.5" key0="r" key4="v"/>
+    <key key0="s" key6="z" key8="k"/>
+    <key key0="i"/>
+  </row>
+  <row>
+    <key width="1.5"/>
+    <key key0="n" key6="l" key7="j" key8="x"/>
+    <key key0="o" key6="f" key7="p" key8="g"/>
+    <key key0="a" key5="u" key8="y"/>
+  </row>
+  <row>
+    <key width="1.5" key0="shift" key2="loc capslock"/>
+    <key key0="h" key6="m" key7="c"/>
+    <key key0="t" key1="b" key2="w" key3="." key4="d"/>
+    <key key0="e" key5="'" key7="q" key8=","/>
+    <key width="1.5" key0="backspace" key2="delete"/>
+  </row>
+</keyboard>

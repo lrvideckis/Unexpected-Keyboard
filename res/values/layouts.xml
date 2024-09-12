@@ -6,7 +6,6 @@
     <item>latn_qwerty_us</item>
     <item>latn_colemak</item>
     <item>latn_dvorak</item>
-    <item>messagease_inspired</item>
     <item>arab_alt</item>
     <item>arab_hamvaj_tly</item>
     <item>arab_pc</item>
@@ -56,6 +55,8 @@
     <item>latn_qwertz_fr_ch</item>
     <item>latn_qwertz_hu</item>
     <item>latn_qwertz_sk</item>
+    <item>latn_rsinoa_us</item>
+    <item>messagease_inspired</item>
     <item>shaw_imperial_en</item>
     <item>urdu_phonetic_ur</item>
     <item>custom</item>
@@ -65,7 +66,6 @@
     <item>QWERTY (US)</item>
     <item>Colemak</item>
     <item>Dvorak</item>
-    <item>MessagEase Inspired</item>
     <item>Arabic Alt</item>
     <item>Talysh (تالشی همواج)</item>
     <item>Arabic PC</item>
@@ -115,6 +115,8 @@
     <item>QWERTZ (Swiss French)</item>
     <item>QWERTZ (Magyar)</item>
     <item>QWERTZ (Slovak)</item>
+    <item>RSINOA</item>
+    <item>MessagEase Inspired</item>
     <item>Shaw Imperial</item>
     <item>Urdu Phonetic</item>
     <item>@string/pref_layout_e_custom</item>
@@ -124,7 +126,6 @@
     <item>@xml/latn_qwerty_us</item>
     <item>@xml/latn_colemak</item>
     <item>@xml/latn_dvorak</item>
-    <item>@xml/messagease_inspired</item>
     <item>@xml/arab_alt</item>
     <item>@xml/arab_hamvaj_tly</item>
     <item>@xml/arab_pc</item>
@@ -174,6 +175,8 @@
     <item>@xml/latn_qwertz_fr_ch</item>
     <item>@xml/latn_qwertz_hu</item>
     <item>@xml/latn_qwertz_sk</item>
+    <item>@xml/latn_rsinoa_us</item>
+    <item>@xml/messagease_inspired</item>
     <item>@xml/shaw_imperial_en</item>
     <item>@xml/urdu_phonetic_ur</item>
     <item>-1</item>
