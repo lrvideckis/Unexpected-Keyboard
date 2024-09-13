@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <keyboard name="RSINOA" script="latin">
   <row>
-    <key shift="1.5" key0="r" key4="c" anticircle="7" indication="￲       7"/>
-    <key key0="s" key6="z" key8="k" anticircle="8" indication="￲       8"/>
-    <key key0="i" anticircle="9" indication="￲       9"/>
+    <key shift="1.5" key0="r" key4="c" anticircle="7" indication="￲       ⁷"/>
+    <key key0="s" key6="z" key8="k" anticircle="8" indication="￲       ⁸"/>
+    <key key0="i" anticircle="9" indication="￲       ⁹"/>
   </row>
   <row>
-    <key shift="1.5" key0="n" key6="l" key7="x" key8="v" anticircle="4" indication="￲       4"/>
-    <key key0="o" key1="p" key2="f" key3="g" key4="d" anticircle="5" indication="￲       5"/>
-    <key key0="a" key5="u" key8="y" anticircle="6" indication="￲       6"/>
+    <key shift="1.5" key0="n" key6="l" key7="x" key8="v" anticircle="4" indication="￲       ⁴"/>
+    <key key0="o" key1="p" key2="f" key3="g" key4="d" anticircle="5" indication="￲       ⁵"/>
+    <key key0="a" key5="u" key8="y" anticircle="6" indication="￲       ⁶"/>
   </row>
   <row>
-    <key width="1.5" key0="shift" key2="loc capslock" anticircle="0" indication="￲       0"/>
-    <key key0="h" key6="m" key7="j" anticircle="1" indication="￲       1"/>
-    <key key0="t" key1="b" key2="w" key4="," anticircle="2" indication="￲       2"/>
-    <key key0="e" key1="'" key2="q" key8="." anticircle="3" indication="￲       3"/>
+    <key width="1.5" key0="shift" key2="loc capslock" anticircle="0" indication="￲       ⁰"/>
+    <key key0="h" key6="m" key7="j" anticircle="1" indication="￲       ¹"/>
+    <key key0="t" key1="b" key2="w" key4="," anticircle="2" indication="￲       ²"/>
+    <key key0="e" key1="'" key2="q" key8="." anticircle="3" indication="￲       ³"/>
     <key width="1.5" key0="backspace" key2="delete"/>
   </row>
 </keyboard>
