@@ -11,7 +11,7 @@
     <key key0="a" key5="u" key8="y" anticircle="6" indication=""/>
   </row>
   <row>
-    <key width="1.5" key0="shift" key2="loc capslock"/>
+    <key width="1.5" key0="shift" key2="loc capslock" anticircle="0" indication=""/>
     <key key0="h" key6="m" key7="j" anticircle="1" indication=""/>
     <key key0="t" key1="b" key2="w" key4="," anticircle="2" indication=""/>
     <key key0="e" key1="'" key2="q" key8="." anticircle="3" indication=""/>
