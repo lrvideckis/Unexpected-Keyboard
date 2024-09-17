@@ -3,19 +3,19 @@
   <row>
     <key width=".75" key0="+" key6="*" key7="`" key8="="/>
     <key width=".75" key0="/" key7="~" key8="\\"/>
-    <key key0="r" key4="c" anticircle="7" indication=""/>
-    <key key0="s" key6="z" key8="k" anticircle="8" indication=""/>
-    <key key0="i" anticircle="9" indication=""/>
+    <key key0="r" key4="c" key7="Luke" anticircle="7" indication=""/>
+    <key key0="s" key6="z" key7="Videckis" key8="k" anticircle="8" indication=""/>
+    <key key0="i" key5="lukevideckis" key6=".com" key7="\@gmail" key8="lrvideckis" anticircle="9" indication=""/>
     <key width=".75" key0="(" key6="{" key7="[" key8="&lt;"/>
     <key width=".75" key0=")" key5="}" key7="]" key8="&gt;"/>
   </row>
   <row>
-    <key width=".75" key0="&quot;" key7="#" key8="@"/>
+    <key width=".75" key0="&quot;" key7="\#" key8="\@"/>
     <key width=".75" key0="-" key7="|" key8="_"/>
     <key key0="n" key6="l" key7="x" key8="v" anticircle="4" indication=""/>
     <key key0="o" key1="p" key2="f" key3="g" key4="d" anticircle="5" indication=""/>
     <key key0="a" key5="u" key8="y" anticircle="6" indication=""/>
-    <key width=".75" key0="?" key7="%" key8="^"/>
+    <key width=".75" key0="\?" key7="%" key8="^"/>
     <key width=".75" key0="!" key7="$" key8="&amp;"/>
   </row>
   <row>
