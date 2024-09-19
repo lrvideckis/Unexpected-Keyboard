@@ -15,15 +15,15 @@
     <key key0="n" key6="l" key7="x" key8="v" anticircle="4" indication=""/>
     <key key0="o" key1="p" key2="f" key3="g" key4="d" anticircle="5" indication=""/>
     <key key0="a" key5="u" key8="y" anticircle="6" indication=""/>
-    <key width=".75" key0="\?" key7="%" key8="^"/>
-    <key width=".75" key0="!" key7="$" key8="&amp;"/>
+    <key width=".75" key0="," key7="%" key8="^"/>
+    <key width=".75" key0="." key7="$" key8="&amp;"/>
   </row>
   <row>
     <key width=".75" key0="shift" key2="loc capslock"/>
     <key width=".75" key0=":" key8=";" anticircle="0" indication=""/>
     <key key0="h" key6="m" key7="j" anticircle="1" indication=""/>
-    <key key0="t" key1="b" key2="w" key4="," anticircle="2" indication=""/>
-    <key key0="e" key1="'" key2="q" key8="." anticircle="3" indication=""/>
+    <key key0="t" key1="b" key2="w" key8="!" anticircle="2" indication=""/>
+    <key key0="e" key1="'" key2="q" key8="\?" anticircle="3" indication=""/>
     <key width="1.5" key0="backspace"/>
   </row>
 </keyboard>
