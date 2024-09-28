@@ -2,9 +2,9 @@
 <keyboard name="UOINDL" script="latin">
   <row>
     <key key0="u" key1="#" key2="loc esc" key4=":"/>
-    <key key0="o" key1="*" key4="'"/>
-    <key key0="i" key1="@" key4="?" anticircle="7" indication="⁷"/>
-    <key key0="n" key2="z" key3="v" anticircle="8" indication="⁸"/>
+    <key key0="o" key1="*" key2="Luke" key3="Videckis" key4="'"/>
+    <key key0="i" key1="@" key2="lukevideckis" key3="lrvideckis" key4="?" anticircle="7" indication="⁷"/>
+    <key key0="n" key1="@gmail" key2="z" key3="v" key4=".com" anticircle="8" indication="⁸"/>
     <key key0="d" key2="/" key3="p" anticircle="9" indication="⁹"/>
     <key key0="l" key1="`" key2="_" key3="j"/>
   </row>
