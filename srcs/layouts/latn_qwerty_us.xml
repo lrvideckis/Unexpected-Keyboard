@@ -7,7 +7,7 @@
     <key c="n" ne="z" sw="v" anticircle="8" indication="⁸"/>
     <key c="d" ne="_" sw="p" se="-" anticircle="9" indication="⁹"/>
     <key c="l" nw="*" ne="+" sw="j" se="="/>
-    <key c="lrvideckis" nw="lukevideckis" ne="@gmail" sw="codeforces" se=".com"/>
+    <key c=":str symbol='lrv':'lrvideckis'" nw="lukevideckis" ne="@gmail" sw="codeforces" se=".com"/>
   </row>
   <row>
     <key c="g"/>
