@@ -3,27 +3,27 @@
   <row>
     <key c="u" nw="~" ne="@" sw="`" se="#"/>
     <key c="o" nw="$" ne="&quot;" sw="%" se="'"/>
-    <key c="i" nw="^" ne="(" sw="&amp;" se=")" anticircle="7" indication="⁷"/>
-    <key c="n" ne="z" sw="v" anticircle="8" indication="⁸"/>
-    <key c="d" ne="_" sw="p" se="-" anticircle="9" indication="⁹"/>
+    <key c="i" nw="^" ne="(" sw="&amp;" se=")" anticircle="f7" indication=""/>
+    <key c="n" ne="z" sw="v" anticircle="f8" indication=""/>
+    <key c="d" ne="_" sw="p" se="-" anticircle="f9" indication=""/>
     <key c="l" nw="*" ne="+" sw="j" se="="/>
     <key c=":str symbol='lrv':'lrvideckis'" nw="lukevideckis" ne="@gmail" sw="codeforces" se=".com"/>
   </row>
   <row>
-    <key c="g" ne="esc" se="tab"/>
+    <key c="g"/>
     <key c="t" nw="q" se="k"/>
-    <key c="a" anticircle="4" indication="⁴"/>
-    <key c="r" ne="x" sw="c" anticircle="5" indication="⁵"/>
-    <key c="s" nw="{" ne="}" sw="[" se="]" anticircle="6" indication="⁶"/>
+    <key c="a"/>
+    <key c="r" ne="x" sw="c" anticircle="f5" indication=""/>
+    <key c="s" nw="{" ne="}" sw="[" se="]" anticircle="f6" indication=""/>
     <key c="m" nw=":" ne="|" sw=";" se="\\"/>
     <key c="switch_numeric"/>
   </row>
   <row>
-    <key c="shift" ne="capslock"/>
-    <key c="y" anticircle="0" indication="⁰"/>
-    <key c="e" nw="&lt;" ne="&gt;" sw="," se="." anticircle="1" indication="¹"/>
-    <key c="h" ne="b" sw="f" anticircle="2" indication="²"/>
-    <key c="w" sw="!" ne="?" se="/" anticircle="3" indication="³"/>
+    <key c="shift" n="esc" s="capslock" e="tab"/>
+    <key c="y"/>
+    <key c="e" nw="&lt;" ne="&gt;" sw="," se="."/>
+    <key c="h" ne="b" sw="f"/>
+    <key c="w" sw="!" ne="?" se="/"/>
     <key width="2" c="backspace"/>
   </row>
   <row height="0.95">
