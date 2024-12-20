@@ -10,20 +10,20 @@
     <key              width="0.9" key0="ह" key1="श" key2="ळ" key3="स"  key4="ष"/>
   </row>
   <row>
-    <key shift="0.35" width="0.9" key0="ा" key1="अ" key2="आ"/>
-    <key              width="0.9" key0="ि" key1="इ"/>
-    <key              width="0.9" key0="ी" key1="ई" anticircle="४" indication=""/>
-    <key              width="0.9" key0="ु" key1="उ" key2="ऊ" key4="ू" key3="झंव" anticircle="५" indication=""/>
-    <key              width="0.9" key0="े" key1="ए" key2="ऋ" key4="ृ" key3="बायेक" anticircle="६" indication=""/>
-    <key              width="0.9" key0="ै" key1="ऐ" key2="ऌ" key4="ॢ" key3="चेडियेच्या"/>
-    <key              width="0.9" key0="ो" key1="ओ" key2="औ" key3="अच्छा" key4="ौ"/>
+    <key shift="0.35" width="0.9" key0="ा" key1="अ" key2="आ" key3="झंव" key4="बायेक"/>
+    <key              width="0.9" key0="ि" key3="बहोत" key4="ज़्यादा" key1="इ"/>
+    <key              width="0.9" key0="ी" key1="ई" key3="मैं" key4="हूँ" anticircle="४" indication=""/>
+    <key              width="0.9" key0="ु" key1="उ" key2="ऊ" key3="मुझे" key4="ू" anticircle="५" indication=""/>
+    <key              width="0.9" key0="े" key1="ए" key2="ऋ" key3="पसंद" key4="ृ" anticircle="६" indication=""/>
+    <key              width="0.9" key0="ै" key1="ऐ" key2="ऌ" key3="ठीक" key4="ॢ"/>
+    <key              width="0.9" key0="ो" key1="ओ" key2="औ" key3="अच्छ" key4="ौ"/>
   </row>
   <row>
     <key key0="ऽ" key4="\@"/>
     <key key0="ँ" key1="₹" key2="॑" key3="ॖ" key4="॓" anticircle="०" indication=""/>
     <key key0="ं" key1="ॐ" key2="।" key3="ः" key4="&quot;" anticircle="१" indication=""/>
     <key key0="्" key1="," key2=";" key3="!" key4="\?" anticircle="२" indication=""/>
-    <key key0="़" key1="॰" key3="-" key4="॒" anticircle="३" indication=""/>
+    <key key0="़" key1="॰" key2="किट्टू" key3="-" key4="॒" anticircle="३" indication=""/>
     <key width="2" key0="backspace"/>
   </row>
   <row height="0.95">
