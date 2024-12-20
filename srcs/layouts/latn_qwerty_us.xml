@@ -10,7 +10,7 @@
     <key c=":str symbol='lrv':'lrvideckis'" nw="lukevideckis" ne="@gmail" sw="codeforces" se=".com"/>
   </row>
   <row>
-    <key c="g"/>
+    <key c="g" ne="esc" se="tab"/>
     <key c="t" nw="q" se="k"/>
     <key c="a" anticircle="4" indication="⁴"/>
     <key c="r" ne="x" sw="c" anticircle="5" indication="⁵"/>
@@ -19,7 +19,7 @@
     <key c="switch_numeric"/>
   </row>
   <row>
-    <key c="shift" ne="loc capslock"/>
+    <key c="shift" ne="capslock"/>
     <key c="y" anticircle="0" indication="⁰"/>
     <key c="e" nw="&lt;" ne="&gt;" sw="," se="." anticircle="1" indication="¹"/>
     <key c="h" ne="b" sw="f" anticircle="2" indication="²"/>
@@ -27,7 +27,7 @@
     <key width="2" c="backspace"/>
   </row>
   <row height="0.95">
-    <key width="0.93" c="ctrl" ne="switch_numeric" se="fn"/>
+    <key width="0.93" c="ctrl" se="fn"/>
     <key width="0.93" c="left" w="home" n="up" s="down"/>
     <key width="0.93" c="right" e="end"/>
     <key width="1.42" c="space"/>
