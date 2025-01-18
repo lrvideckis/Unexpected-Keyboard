@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <keyboard name="UOINDL" script="latin">
   <row>
-    <key c="u" nw="~" ne="@" sw="`" se="#"/>
-    <key c="o" nw="$" ne="&quot;" sw="%" se="'"/>
-    <key c="i" nw="^" ne="(" sw="&amp;" se=")" anticircle="f7"/>
-    <key c="n" ne="z" sw="v" anticircle="f8"/>
-    <key c="d" ne="_" sw="p" se="-" anticircle="f9"/>
-    <key c="l" nw="*" ne="+" sw="j" se="="/>
-    <key c=":str symbol='lrv':'lrvideckis'" nw="lukevideckis" ne="@gmail" sw="codeforces" se=".com"/>
+    <key shift="0.35" width="0.9" c="u" nw="~" ne="@" sw="`" se="#"/>
+    <key              width="0.9" c="o" nw="$" ne="&quot;" sw="%" se="'"/>
+    <key              width="0.9" c="i" nw="^" ne="(" sw="&amp;" se=")" anticircle="f7"/>
+    <key              width="0.9" c="n" ne="z" sw="v" anticircle="f8"/>
+    <key              width="0.9" c="d" ne="_" sw="p" se="-" anticircle="f9"/>
+    <key              width="0.9" c="l" nw="*" ne="+" sw="j" se="="/>
+    <key              width="0.9" c=":str symbol='lrv':'lrvideckis'" nw="lukevideckis" ne="@gmail" sw="codeforces" se=".com"/>
   </row>
   <row>
-    <key c="g"/>
-    <key c="t" nw="q" se="k"/>
-    <key c="a"/>
-    <key c="r" ne="x" sw="c" anticircle="f5"/>
-    <key c="s" nw="{" ne="}" sw="[" se="]" anticircle="f6"/>
-    <key c="m" nw=":" ne="|" sw=";" se="\\"/>
-    <key c="switch_numeric"/>
+    <key shift="0.35" width="0.9" c="g"/>
+    <key              width="0.9" c="t" nw="q" se="k"/>
+    <key              width="0.9" c="a"/>
+    <key              width="0.9" c="r" ne="x" sw="c" anticircle="f5"/>
+    <key              width="0.9" c="s" nw="{" ne="}" sw="[" se="]" anticircle="f6"/>
+    <key              width="0.9" c="m" nw=":" ne="|" sw=";" se="\\"/>
+    <key              width="0.9" c="switch_numeric"/>
   </row>
   <row>
     <key c="shift" n="esc" s="capslock" e="tab"/>
