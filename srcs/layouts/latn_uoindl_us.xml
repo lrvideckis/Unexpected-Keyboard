@@ -1,27 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <keyboard name="UOINDL" script="latin">
   <row>
-    <key key0="u" key1="~" key2="@" key3="`" key4="#"/>
-    <key key0="o" key1="$" key2="&quot;" key3="%" key4="'"/>
-    <key key0="i" key1="^" key2="(" key3="&amp;" key4=")" anticircle="7" indication="⁷"/>
-    <key key0="n" key2="z" key3="v" anticircle="8" indication="⁸"/>
-    <key key0="d" key2="_" key3="p" key4="-" anticircle="9" indication="⁹"/>
-    <key key0="l" key1="*" key2="+" key3="j" key4="="/>
+    <key c="u" nw="~" ne="@" sw="`" se="#"/>
+    <key c="o" nw="$" ne="&quot;" sw="%" se="'"/>
+    <key c="i" nw="^" ne="(" sw="&amp;" se=")" anticircle="f7"/>
+    <key c="n" ne="z" sw="v" anticircle="f8"/>
+    <key c="d" ne="_" sw="p" se="-" anticircle="f9"/>
+    <key c="l" nw="*" ne="+" sw="j" se="="/>
+    <key c=":str symbol='lrv':'lrvideckis'" nw="lukevideckis" ne="@gmail" sw="codeforces" se=".com"/>
   </row>
   <row>
-    <key key0="g" key1="@gmail" key2="lukevideckis" key3=".com" key4="lrvideckis"/>
-    <key key0="t" key1="q" key4="k"/>
-    <key key0="a" anticircle="4" indication="⁴"/>
-    <key key0="r" key2="x" key3="c" anticircle="5" indication="⁵"/>
-    <key key0="s" key1="{" key2="}" key3="[" key4="]" anticircle="6" indication="⁶"/>
-    <key key0="m" key1=":" key2="|" key3=";" key4="\\"/>
+    <key c="g"/>
+    <key c="t" nw="q" se="k"/>
+    <key c="a"/>
+    <key c="r" ne="x" sw="c" anticircle="f5"/>
+    <key c="s" nw="{" ne="}" sw="[" se="]" anticircle="f6"/>
+    <key c="m" nw=":" ne="|" sw=";" se="\\"/>
+    <key c="switch_numeric"/>
   </row>
   <row>
-    <key key0="shift" key2="loc capslock"/>
-    <key key0="y" anticircle="0" indication="⁰"/>
-    <key key0="e" key1="&lt;" key2="&gt;" key3="," key4="." anticircle="1" indication="¹"/>
-    <key key0="h" key2="b" key3="f" anticircle="2" indication="²"/>
-    <key key0="w" key3="!" key2="?" key4="/" anticircle="3" indication="³"/>
-    <key key0="backspace"/>
+    <key c="shift" n="esc" s="capslock" e="tab"/>
+    <key c="y"/>
+    <key c="e" nw="&lt;" ne="&gt;" sw="," se="."/>
+    <key c="h" ne="b" sw="f"/>
+    <key c="w" sw="!" ne="?" se="/"/>
+    <key width="2" c="backspace"/>
   </row>
 </keyboard>
