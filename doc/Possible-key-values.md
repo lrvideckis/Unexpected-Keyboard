@@ -46,7 +46,8 @@ These keys are sent to apps, which are free to ignore them. The keyboard does no
 `page_up`, `page_down`,
 `home`, `end`,
 `backspace`, `delete`,
-`insert`, `f1`-`f12`,
+`insert`, `scroll_lock`,
+`f1`-`f12`,
 `tab`, `copy`,
 `paste`, `cut`,
 `selectAll`, `pasteAsPlainText`,
@@ -65,8 +66,10 @@ Value   | Meaning
 These keys perform editing on the text without sending keys that the app can interpret differently or ignore.
 Value              | Meaning
 :----------------- | :------
-`cursor_left`      | Moves the cursor position to the left directly, without sending a `left` key event.
-`cursor_right`     | Moves the cursor position to the right directly, without sending a `right` key event.
+`cursor_left`      | Moves the cursor to the left with the slider gesture.
+`cursor_right`     | Moves the cursor to the right with the slider gesture.
+`cursor_up`     | Moves the cursor up with the slider gesture. Warning: this might make the cursor leave the text box.
+`cursor_down`     | Moves the cursor down with the slider gesture. Warning: this might make the cursor leave the text box.
 
 ## Other modifiers and diacritics
 Value                | Meaning
@@ -90,6 +93,7 @@ Value                | Meaning
 `accent_dot_below`   | Dot below. `ạ`
 `accent_horn`        | Horn accent. `ơ`
 `accent_hook_above`  | Hook accent. `ả`
+`accent_double_grave`  | Double grave accent. `ȁ`
 `superscript`        | Superscript. `ᵃ`
 `subscript`          | Subscript. `ₐ`
 `ordinal`            | Turns `a` and `o` into `ª` and `º`.
@@ -185,5 +189,13 @@ on it. `char` keys can be modified by `ctrl` and other modifiers, unlike `str`
 keys.
 
 For example:
-- `:char symbol='q':љ`, which is used to implement `ctrl` shortcuts in cyrillic
+- `:char symbol='љ':q`, which is used to implement `ctrl` shortcuts in cyrillic
   layouts.
+
+### Kind `keyevent`
+
+Defines a key that sends an Android [key event](https://developer.android.com/reference/android/view/KeyEvent).
+`<payload>` is the key event number.
+
+For example:
+- `:keyevent symbol='⏯' flags='small':85`
