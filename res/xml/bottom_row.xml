@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <row height="0.95">
-  <key width="0.93" key0="switch_numeric" key4="fn"/>
-  <key width="0.93" key0="left" key5="home" key7="up" key8="down"/>
-  <key width="0.93" key0="right" key6="end"/>
-  <key width="1.42" key0="space"/>
-  <key width="0.93" key0="switch_forward" key5="undo" key6="redo" key7="config" key8="switch_emoji"/>
-  <key width="0.93" key0="selectAll" key6="switch_clipboard" key7="copy" key8="paste"/>
-  <key width="0.93" key0="enter" key7="action"/>
+  <key width="0.93" c="switch_numeric" se="fn"/>
+  <key width="0.93" c="left" w="home" n="up" s="down"/>
+  <key width="0.93" c="right" e="end"/>
+  <key width="1.42" c="space"/>
+  <key width="0.93" c="switch_forward" w="undo" e="redo" n="config" s="switch_emoji"/>
+  <key width="0.93" c="selectAll" e="switch_clipboard" n="copy" s="paste"/>
+  <key width="0.93" c="enter" n="action"/>
 </row>
