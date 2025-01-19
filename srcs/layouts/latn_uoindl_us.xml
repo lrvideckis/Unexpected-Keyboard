@@ -24,6 +24,6 @@
     <key c="e" nw="&lt;" ne="&gt;" sw="," se="." anticircle="1"/>
     <key c="h" ne="b" sw="f" anticircle="2"/>
     <key c="w" sw="!" ne="?" se="/" anticircle="3"/>
-    <key width="2" c="backspace" w=":macro symbol='&lt;x':ctrl,backspace"/>
+    <key width="2" c="backspace" n=":macro symbol='↑x':shift,ctrl,home,backspace" s=":macro symbol='↓x':shift,ctrl,end,backspace" w=":macro symbol='&lt;x':ctrl,backspace"/>
   </row>
 </keyboard>
