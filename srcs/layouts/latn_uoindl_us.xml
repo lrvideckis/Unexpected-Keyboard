@@ -16,7 +16,7 @@
     <key              width="0.9" c="r" ne="x" sw="c" anticircle="5"/>
     <key              width="0.9" c="s" nw="{" ne="}" sw="[" se="]" anticircle="6"/>
     <key              width="0.9" c="m" nw=":" ne="|" sw=";" se="\\"/>
-    <key              width="0.9" c="switch_numeric"/>
+    <key              width="0.9"/>
   </row>
   <row>
     <key c="shift" n="esc" s="capslock" e="tab"/>
@@ -24,6 +24,6 @@
     <key c="e" nw="&lt;" ne="&gt;" sw="," se="." anticircle="1"/>
     <key c="h" ne="b" sw="f" anticircle="2"/>
     <key c="w" sw="!" ne="?" se="/" anticircle="3"/>
-    <key width="2" c="backspace"/>
+    <key width="2" c="backspace" w=":macro symbol='&lt;x':ctrl,backspace"/>
   </row>
 </keyboard>
