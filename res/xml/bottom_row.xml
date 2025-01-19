@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <row height="0.95">
-  <key width="0.93" c="switch_numeric" se="fn"/>
+  <key width="0.93" c="switch_numeric" ne="ctrl" se="fn"/>
   <key width="0.93" c="left" n=":macro symbol='↑':ctrl,home" s=":macro symbol='↓':ctrl,end" w=":macro symbol='&lt;-':ctrl,left"/>
   <key width="0.93" c="right" e=":macro symbol='-&gt;':ctrl,right"/>
   <key width="1.42" c="space"/>
