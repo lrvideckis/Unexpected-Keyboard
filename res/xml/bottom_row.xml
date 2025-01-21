@@ -3,7 +3,7 @@
   <key c="switch_numeric" ne="ctrl" se="fn"/>
   <key c="left"/>
   <key c="right"/>
-  <key width="1.7" c="space" n=":macro symbol='↑':ctrl,home" s=":macro symbol='↓':ctrl,end" w=":macro symbol='&lt;-':ctrl,left" e=":macro symbol='-&gt;':ctrl,right"/>
+  <key width="2" c="space" n=":macro symbol='↑':ctrl,home" s=":macro symbol='↓':ctrl,end" w=":macro symbol='&lt;-':ctrl,left" e=":macro symbol='-&gt;':ctrl,right"/>
   <key c="switch_forward" w="undo" e="redo" n="config" s="switch_emoji"/>
   <key c="selectAll" e="switch_clipboard" n="copy" s="paste"/>
   <key c="enter" n="action"/>
