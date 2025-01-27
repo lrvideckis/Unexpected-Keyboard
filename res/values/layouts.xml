@@ -16,6 +16,7 @@
     <item>armenian_ph_am</item>
     <item>beng_national</item>
     <item>beng_provat</item>
+    <item>cyrl_fcuzhen_mn</item>
     <item>cyrl_jcuken_kk</item>
     <item>cyrl_jcuken_ru</item>
     <item>cyrl_jcuken_uk</item>
@@ -55,6 +56,7 @@
     <item>latn_qwerty_kk</item>
     <item>latn_qwerty_lt</item>
     <item>latn_qwerty_lv</item>
+    <item>latn_qwerty_mt</item>
     <item>latn_qwerty_no</item>
     <item>latn_qwerty_pl</item>
     <item>latn_qwerty_ro</item>
@@ -96,6 +98,7 @@
     <item>Armenian</item>
     <item>বাংলা (জাতীয়)</item>
     <item>বাংলা (প্রভাত)</item>
+    <item>ФЦУЖЭН (Монгол)</item>
     <item>ЙЦУКЕН (Қазақша)</item>
     <item>ЙЦУКЕН (Русский)</item>
     <item>ЙЦУКЕН (Українська)</item>
@@ -135,6 +138,7 @@
     <item>QWERTY (Qazaqşa)</item>
     <item>QWERTY (Lietuviškai)</item>
     <item>QWERTY (Latvian)</item>
+    <item>QWERTY (Malti)</item>
     <item>QWERTY (Norwegian)</item>
     <item>QWERTY (Polski)</item>
     <item>QWERTY (Română)</item>
@@ -176,6 +180,7 @@
     <item>@xml/armenian_ph_am</item>
     <item>@xml/beng_national</item>
     <item>@xml/beng_provat</item>
+    <item>@xml/cyrl_fcuzhen_mn</item>
     <item>@xml/cyrl_jcuken_kk</item>
     <item>@xml/cyrl_jcuken_ru</item>
     <item>@xml/cyrl_jcuken_uk</item>
@@ -215,6 +220,7 @@
     <item>@xml/latn_qwerty_kk</item>
     <item>@xml/latn_qwerty_lt</item>
     <item>@xml/latn_qwerty_lv</item>
+    <item>@xml/latn_qwerty_mt</item>
     <item>@xml/latn_qwerty_no</item>
     <item>@xml/latn_qwerty_pl</item>
     <item>@xml/latn_qwerty_ro</item>
