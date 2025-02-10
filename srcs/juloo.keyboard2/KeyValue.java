@@ -80,6 +80,7 @@ public final class KeyValue implements Comparable<KeyValue>
   public static enum Placeholder
   {
     REMOVED,
+    COMPOSE_CANCEL,
     F11,
     F12,
     SHINDOT,
@@ -98,10 +99,10 @@ public final class KeyValue implements Comparable<KeyValue>
     Macro, // [_payload] is a [KeyValue.Macro], value is unused.
   }
 
-  private static final int FLAGS_OFFSET = 19;
+  private static final int FLAGS_OFFSET = 20;
   private static final int KIND_OFFSET = 28;
 
-  // Behavior flags.
+  // Key stay activated when pressed once.
   public static final int FLAG_LATCH = (1 << FLAGS_OFFSET << 0);
   // Key can be locked by typing twice when enabled in settings
   public static final int FLAG_DOUBLE_TAP_LOCK = (1 << FLAGS_OFFSET << 1);
@@ -111,24 +112,23 @@ public final class KeyValue implements Comparable<KeyValue>
   // Whether the symbol should be greyed out. For example, keys that are not
   // part of the pending compose sequence.
   public static final int FLAG_GREYED = (1 << FLAGS_OFFSET << 3);
-  // Rendering flags.
-  public static final int FLAG_KEY_FONT = (1 << FLAGS_OFFSET << 4); // special font file
-  public static final int FLAG_SMALLER_FONT = (1 << FLAGS_OFFSET << 5); // 25% smaller symbols
-  public static final int FLAG_SECONDARY = (1 << FLAGS_OFFSET << 6); // dimmer
-  // Used by [Pointers].
+  // The special font is required to render this key.
+  public static final int FLAG_KEY_FONT = (1 << FLAGS_OFFSET << 4);
+  // 25% smaller symbols
+  public static final int FLAG_SMALLER_FONT = (1 << FLAGS_OFFSET << 5);
+  // Dimmer symbol
+  public static final int FLAG_SECONDARY = (1 << FLAGS_OFFSET << 6);
   // Free: (1 << FLAGS_OFFSET << 7)
-  // Free: (1 << FLAGS_OFFSET << 8)
 
   // Ranges for the different components
-  private static final int FLAGS_BITS =
-    FLAG_LATCH | FLAG_DOUBLE_TAP_LOCK | FLAG_SPECIAL | FLAG_GREYED |
-    FLAG_KEY_FONT | FLAG_SMALLER_FONT | FLAG_SECONDARY;
+  private static final int FLAGS_BITS = (0b11111111 << FLAGS_OFFSET); // 8 bits wide
   private static final int KIND_BITS = (0b1111 << KIND_OFFSET); // 4 bits wide
-  private static final int VALUE_BITS = ~(FLAGS_BITS | KIND_BITS); // 20 bits wide
+  private static final int VALUE_BITS = 0b11111111111111111111; // 20 bits wide
 
   static
   {
-    check((FLAGS_BITS & KIND_BITS) == 0); // No overlap
+    check((FLAGS_BITS & KIND_BITS) == 0); // No overlap with kind
+    check(~(FLAGS_BITS | KIND_BITS) == VALUE_BITS); // No overlap with value
     check((FLAGS_BITS | KIND_BITS | VALUE_BITS) == ~0); // No holes
     // No kind is out of range
     check((((Kind.values().length - 1) << KIND_OFFSET) & ~KIND_BITS) == 0);
@@ -388,6 +388,12 @@ public final class KeyValue implements Comparable<KeyValue>
     return new KeyValue("", Kind.Placeholder, id.ordinal(), 0);
   }
 
+  private static KeyValue placeholderKey(int symbol, Placeholder id, int flags)
+  {
+    return new KeyValue(String.valueOf((char)symbol), Kind.Placeholder,
+        id.ordinal(), flags | FLAG_KEY_FONT);
+  }
+
   public static KeyValue makeStringKey(String str)
   {
     return makeStringKey(str, 0);
@@ -611,9 +617,9 @@ public final class KeyValue implements Comparable<KeyValue>
       case "esc": return keyeventKey("Esc", KeyEvent.KEYCODE_ESCAPE, FLAG_SMALLER_FONT);
       case "enter": return keyeventKey(0xE00E, KeyEvent.KEYCODE_ENTER, 0);
       case "up": return keyeventKey(0xE005, KeyEvent.KEYCODE_DPAD_UP, 0);
-      case "right": return keyeventKey(0xE006, KeyEvent.KEYCODE_DPAD_RIGHT, 0);
+      case "right": return keyeventKey(0xE006, KeyEvent.KEYCODE_DPAD_RIGHT, FLAG_SMALLER_FONT);
       case "down": return keyeventKey(0xE007, KeyEvent.KEYCODE_DPAD_DOWN, 0);
-      case "left": return keyeventKey(0xE008, KeyEvent.KEYCODE_DPAD_LEFT, 0);
+      case "left": return keyeventKey(0xE008, KeyEvent.KEYCODE_DPAD_LEFT, FLAG_SMALLER_FONT);
       case "page_up": return keyeventKey(0xE002, KeyEvent.KEYCODE_PAGE_UP, 0);
       case "page_down": return keyeventKey(0xE003, KeyEvent.KEYCODE_PAGE_DOWN, 0);
       case "home": return keyeventKey(0xE00B, KeyEvent.KEYCODE_MOVE_HOME, FLAG_SMALLER_FONT);
@@ -707,7 +713,8 @@ public final class KeyValue implements Comparable<KeyValue>
       case "autofill": return editingKey("auto", Editing.AUTOFILL);
 
       /* The compose key */
-      case "compose": return makeComposePending(0xE016, ComposeKeyData.compose, FLAG_SECONDARY | FLAG_SMALLER_FONT | FLAG_SPECIAL);
+      case "compose": return makeComposePending(0xE016, ComposeKeyData.compose, FLAG_SECONDARY);
+      case "compose_cancel": return placeholderKey(0xE01A, Placeholder.COMPOSE_CANCEL, FLAG_SECONDARY);
 
       /* Placeholder keys */
       case "removed": return placeholderKey(Placeholder.REMOVED);
