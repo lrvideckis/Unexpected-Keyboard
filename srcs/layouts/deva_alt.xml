@@ -24,6 +24,6 @@
     <key c="ं" nw="ॐ" ne="।" sw="ः" se="&quot;" anticircle="१"/>
     <key c="्" nw="," ne=";" sw="!" se="\?" anticircle="२"/>
     <key c="़" nw="॰" ne="किट्टू" sw="-" se="॒" anticircle="३"/>
-    <key width="2" c="backspace" n=":macro symbol='↑x':shift,ctrl,home,backspace" s=":macro symbol='↓x':shift,ctrl,end,backspace" w=":macro symbol='&lt;x':ctrl,backspace"/>
+    <key width="2" c="backspace" n="↑x:shift,ctrl,home,backspace" s="↓x:shift,ctrl,end,backspace" w="&lt;x:ctrl,backspace"/>
   </row>
 </keyboard>
