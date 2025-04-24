@@ -1,43 +1,74 @@
 # Key values
 
-This is an exhaustive list of special values accepted for the `key0` through `key8` or `nw` through `se` attributes on a key.
+A key value defines what a key on the keyboard does when pressed or swiped.
 
-Any string that does not exactly match these will be printed verbatim.
-A key can output multiple characters, but cannot combine multiple built-in key values.
+Key values appear in the following places:
 
-## Escape codes
-Value | Escape code for
+- In custom layouts, they are the value of: the `c` attribute, the compass-point attributes `nw` ... `se`, and the old-style `key0` ... `key8` attributes.
+- Internally, they are used in the definition of the "Add keys to the keyboard" setting.
+
+Key values can be any of the following:
+
+- The name of a special key. A complete list of valid special keys follows.
+
+- An arbitrary sequence of characters not containing `:`.
+  This results in a key that writes the specified characters.
+
+- The syntax `legend:key_def`.
+  `legend` is the visible legend on the keyboard. It cannot contain `:`.
+  `key_def` can be:
+  + The name of a special key, as listed below.
+  + `'string'` An arbitrary string that can contain `:`. `'` can be added to the string as `` \' ``.
+  + `keyevent:keycode` An Android keycode. They are listed as `KEYCODE_...` in [KeyEvent](https://developer.android.com/reference/android/view/KeyEvent#summary).
+
+  Examples:
+  + `⏯:keyevent:85` A play/pause key (which has no effect in most apps).
+  + `my@:'my.email@domain.com'` A key that sends an arbitrary string
+
+- A macro, `legend:key_def1,key_def2,...`.
+  This results in a key with legend `legend` that behaves as if the sequence of `key_def` had been pressed in order.
+
+  Examples:
+  + `CA:ctrl,a,ctrl,c` A key with legend CA that sends the sequence `ctrl+a`, `ctrl+c`.
+  + `Cd:ctrl,backspace` A key with legend Cd that sends the shortcut `ctrl+backspace`.
+
+### Escape codes
+
+When defining a key value, several characters have special effects. If you want a character not to have its usual effect but to be taken literally, you should "escape" it in the usual way for XML:
+
+To get this character... | ...you can type
 :---- | :------
-`\?`  | `?`
-`\#`  | `#`
-`\@`  | `@`
-`\n`  | Literal newline character. This is different from `enter` and `action` in certain apps.
-`\t`  | Literal tab character. This is different from `tab` in certain apps.
-`\\`  | `\`
+A literal newline character, which is different from `enter` and `action` in certain apps. | `\n`
+A literal tab character, which is different from `tab` in certain apps. | `\t`
+`\` | `\\`
+`&` | `&amp;`
+`<` | `&lt;`
+`>` | `&gt;`
+`"` | `&quot;`
 
-XML escape codes also work, including:
+The characters `?`, `#`, and `@` do not need to be escaped when writing custom layouts. Internally, they can be escaped by prepending backslash (by typing `\?`, `\#`, and `\@`).
 
-Value    | Escape code for
-:------- | :------
-`&amp;`  | `&`
-`&lt;`   | `<`
-`&gt;`   | `>`
-`&quot;` | `"`
+The characters `,` and `:` can be escaped in a key value, using single quotes. For example, this macro defines a key with legend `http` that sends a string containing `:`: `<key c="http:home,'https://'" />` For simplicity, `,` and `:` cannot be escaped in the key legend.
 
 ## Modifiers
-System modifiers are sent to the app, which is free to do whatever they want in response.
-The other modifiers only exist within the keyboard.
+System modifiers are sent to the app, which can take app-specific action.
+
 Value       | Meaning
 :---------- | :------
 `shift`     | System modifier.
 `ctrl`      | System modifier.
 `alt`       | System modifier.
 `meta`      | System modifier. Equivalent to the Windows key.
-`fn`        | Activates Fn mode, which assigns letters and symbols to special characters. e.g. `fn` `!` = `¡`
-`compose`   | Compose key. Enables composing characters using Linux-like shortcuts; e.g. `Compose` `A` `single quote` types `Á` (A with acute accent).
-`capslock`  | Actives and locks Shift
 
-## Special keys
+The other modifiers take effect only within the keyboard.
+
+Value       | Meaning
+:---------- | :------
+`fn`        | Activates Fn mode, which assigns letters and symbols to special characters. Example: `fn` `!` = `¡`
+`compose`   | Compose key. Enables composing characters using Linux-like shortcuts. Example: `Compose` `A` `'` types `Á` (A with acute accent).
+`capslock`  | Activates and locks Shift.
+
+## App function keys
 These keys are sent to apps, which are free to ignore them. The keyboard does not perform editing in response to these keys.
 
 `esc`, `enter`,
@@ -53,6 +84,19 @@ These keys are sent to apps, which are free to ignore them. The keyboard does no
 `selectAll`, `pasteAsPlainText`,
 `undo`, `redo`
 
+## Keyboard editing actions
+In contrast, these keys perform editing on the text without sending anything to the app.
+Value                 | Meaning
+:-------------------- | :------
+`cursor_left`         | Moves the cursor to the left with the slider gesture.
+`cursor_right`        | Moves the cursor to the right with the slider gesture.
+`cursor_up`           | Moves the cursor up with the slider gesture. Warning: this might make the cursor leave the text box.
+`cursor_down`         | Moves the cursor down with the slider gesture. Warning: this might make the cursor leave the text box.
+`delete_word`         | Delete the word to the left of the cursor.
+`forward_delete_word` | Delete the word to the right of the cursor.
+
+The values with `cursor_` are new in v1.31.0. Previous custom layouts specified the slider with `slider="true"`, which should be removed.
+
 ## Whitespace
 Value   | Meaning
 :------ | :------
@@ -61,15 +105,6 @@ Value   | Meaning
 `nnbsp` | Narrow non-breaking space.
 `zwj`   | Zero-width joiner.
 `zwnj`  | Zero-width non-joiner.
-
-## Keyboard editing actions
-These keys perform editing on the text without sending keys that the app can interpret differently or ignore.
-Value              | Meaning
-:----------------- | :------
-`cursor_left`      | Moves the cursor to the left with the slider gesture.
-`cursor_right`     | Moves the cursor to the right with the slider gesture.
-`cursor_up`     | Moves the cursor up with the slider gesture. Warning: this might make the cursor leave the text box.
-`cursor_down`     | Moves the cursor down with the slider gesture. Warning: this might make the cursor leave the text box.
 
 ## Other modifiers and diacritics
 Value                | Meaning
@@ -152,50 +187,3 @@ These keys are known to do nothing.
 These keys are normally hidden unless the Fn modifier is activated.
 
 `f11_placeholder` | `f12_placeholder`
-
-## Complex keys
-
-More complex keys are of this form:
-
-```
-:<kind> <attributes>:<payload>
-```
-
-Where `<kind>` is one of the kinds documented below and `<attributes>` is a
-space separated list of attributes. `<payload>` depends on the `<kind>`.
-
-Attributes are:
-- `symbol='Sym'` specifies the symbol to be shown on the keyboard.
-- `flags='<flags>'` changes the behavior of the key.
-  `<flags>` is a coma separated list of:
-  + `dim`: Make the symbol dimmer.
-  + `small`: Make the symbol smaller.
-
-### Kind `str`
-
-Defines a key that outputs an arbitrary string. `<payload>` is a string wrapped
-in single-quotes (`'`), escaping of other single quotes is allowed with `\'`.
-
-For example:
-- `:str:'Arbitrary string with a \' inside'`
-- `:str symbol='Symbol':'Output string'`
-
-### Kind `char`
-
-Defines a key that outputs a single character. `<payload>` is the character to
-output, unquoted.
-This kind of key can be used to define a character key with a different symbol
-on it. `char` keys can be modified by `ctrl` and other modifiers, unlike `str`
-keys.
-
-For example:
-- `:char symbol='љ':q`, which is used to implement `ctrl` shortcuts in cyrillic
-  layouts.
-
-### Kind `keyevent`
-
-Defines a key that sends an Android [key event](https://developer.android.com/reference/android/view/KeyEvent).
-`<payload>` is the key event number.
-
-For example:
-- `:keyevent symbol='⏯' flags='small':85`

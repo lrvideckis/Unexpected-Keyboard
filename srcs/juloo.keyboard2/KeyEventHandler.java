@@ -2,6 +2,7 @@ package juloo.keyboard2;
 
 import android.annotation.SuppressLint;
 import android.os.Looper;
+import android.os.Handler;
 import android.text.InputType;
 import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
@@ -28,10 +29,10 @@ public final class KeyEventHandler
       [setSelection] could be used instead. */
   boolean _move_cursor_force_fallback = false;
 
-  public KeyEventHandler(Looper looper, IReceiver recv)
+  public KeyEventHandler(IReceiver recv)
   {
     _recv = recv;
-    _autocap = new Autocapitalisation(looper,
+    _autocap = new Autocapitalisation(recv.getHandler(),
         this.new Autocapitalisation_callback());
     _mods = Pointers.Modifiers.EMPTY;
   }
@@ -99,7 +100,6 @@ public final class KeyEventHandler
       case Editing: handle_editing_key(key.getEditing()); break;
       case Compose_pending: _recv.set_compose_pending(true); break;
       case Slider: handle_slider(key.getSlider(), key.getSliderRepeat()); break;
-      case StringWithSymbol: send_text(key.getStringWithSymbol()); break;
       case Macro: evaluate_macro(key.getMacro()); break;
     }
     update_meta_state(old_mods);
@@ -147,11 +147,11 @@ public final class KeyEventHandler
     if (down)
     {
       _meta_state = _meta_state | meta_flags;
-      send_keyevent(KeyEvent.ACTION_DOWN, eventCode);
+      send_keyevent(KeyEvent.ACTION_DOWN, eventCode, _meta_state);
     }
     else
     {
-      send_keyevent(KeyEvent.ACTION_UP, eventCode);
+      send_keyevent(KeyEvent.ACTION_UP, eventCode, _meta_state);
       _meta_state = _meta_state & ~meta_flags;
     }
   }
@@ -182,25 +182,28 @@ public final class KeyEventHandler
     }
   }
 
-  /*
-   * Don't set KeyEvent.FLAG_SOFT_KEYBOARD.
-   */
   void send_key_down_up(int keyCode)
   {
-    send_keyevent(KeyEvent.ACTION_DOWN, keyCode);
-    send_keyevent(KeyEvent.ACTION_UP, keyCode);
+    send_key_down_up(keyCode, _meta_state);
   }
 
-  void send_keyevent(int eventAction, int eventCode)
+  /** Ignores currently pressed system modifiers. */
+  void send_key_down_up(int keyCode, int metaState)
+  {
+    send_keyevent(KeyEvent.ACTION_DOWN, keyCode, metaState);
+    send_keyevent(KeyEvent.ACTION_UP, keyCode, metaState);
+  }
+
+  void send_keyevent(int eventAction, int eventCode, int metaState)
   {
     InputConnection conn = _recv.getCurrentInputConnection();
     if (conn == null)
       return;
     conn.sendKeyEvent(new KeyEvent(1, 1, eventAction, eventCode, 0,
-          _meta_state, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
+          metaState, KeyCharacterMap.VIRTUAL_KEYBOARD, 0,
           KeyEvent.FLAG_SOFT_KEYBOARD | KeyEvent.FLAG_KEEP_TOUCH_MODE));
     if (eventAction == KeyEvent.ACTION_UP)
-      _autocap.event_sent(eventCode, _meta_state);
+      _autocap.event_sent(eventCode, metaState);
   }
 
   void send_text(CharSequence text)
@@ -237,6 +240,9 @@ public final class KeyEventHandler
       case REPLACE: send_context_menu_action(android.R.id.replaceText); break;
       case ASSIST: send_context_menu_action(android.R.id.textAssist); break;
       case AUTOFILL: send_context_menu_action(android.R.id.autofill); break;
+      case DELETE_WORD: send_key_down_up(KeyEvent.KEYCODE_DEL, KeyEvent.META_CTRL_ON | KeyEvent.META_CTRL_LEFT_ON); break;
+      case FORWARD_DELETE_WORD: send_key_down_up(KeyEvent.KEYCODE_FORWARD_DEL, KeyEvent.META_CTRL_ON | KeyEvent.META_CTRL_LEFT_ON); break;
+      case SELECTION_CANCEL: cancel_selection(); break;
     }
   }
 
@@ -254,15 +260,17 @@ public final class KeyEventHandler
     return conn.getExtractedText(_move_cursor_req, 0);
   }
 
-  /** [repeatition] might be negative, in which case the direction is reversed. */
-  void handle_slider(KeyValue.Slider s, int repeatition)
+  /** [r] might be negative, in which case the direction is reversed. */
+  void handle_slider(KeyValue.Slider s, int r)
   {
     switch (s)
     {
-      case Cursor_left: move_cursor(-repeatition); break;
-      case Cursor_right: move_cursor(repeatition); break;
-      case Cursor_up: move_cursor_vertical(-repeatition); break;
-      case Cursor_down: move_cursor_vertical(repeatition); break;
+      case Cursor_left: move_cursor(-r); break;
+      case Cursor_right: move_cursor(r); break;
+      case Cursor_up: move_cursor_vertical(-r); break;
+      case Cursor_down: move_cursor_vertical(r); break;
+      case Selection_cursor_left: move_cursor_sel(r, true); break;
+      case Selection_cursor_right: move_cursor_sel(r, false); break;
     }
   }
 
@@ -276,12 +284,7 @@ public final class KeyEventHandler
     if (conn == null)
       return;
     ExtractedText et = get_cursor_pos(conn);
-    int system_mods =
-      KeyEvent.META_CTRL_ON | KeyEvent.META_ALT_ON | KeyEvent.META_META_ON;
-    // Fallback to sending key events if system modifiers are activated or
-    // ExtractedText is not supported, for example on Termux.
-    if (!_move_cursor_force_fallback && et != null
-        && (_meta_state & system_mods) == 0)
+    if (et != null && can_set_selection(conn))
     {
       int sel_start = et.selectionStart;
       int sel_end = et.selectionEnd;
@@ -300,8 +303,45 @@ public final class KeyEventHandler
           sel_start = sel_end;
       }
       if (conn.setSelection(sel_start, sel_end))
-        return; // [setSelection] succeeded, don't fallback to key events
+        return; // Fallback to sending key events if [setSelection] failed
     }
+    move_cursor_fallback(d);
+  }
+
+  /** Move one of the two side of a selection. If [sel_left] is true, the left
+      position is moved, otherwise the right position is moved. */
+  void move_cursor_sel(int d, boolean sel_left)
+  {
+    InputConnection conn = _recv.getCurrentInputConnection();
+    if (conn == null)
+      return;
+    ExtractedText et = get_cursor_pos(conn);
+    if (et != null && can_set_selection(conn))
+    {
+      int sel_start = et.selectionStart;
+      int sel_end = et.selectionEnd;
+      if (sel_left == (sel_start <= sel_end))
+        sel_start += d;
+      else
+        sel_end += d;
+      if (conn.setSelection(sel_start, sel_end))
+        return; // Fallback to sending key events if [setSelection] failed
+    }
+    move_cursor_fallback(d);
+  }
+
+  /** Returns whether the selection can be set using [conn.setSelection()].
+      This can happen on Termux or when system modifiers are activated for
+      example. */
+  boolean can_set_selection(InputConnection conn)
+  {
+    final int system_mods =
+      KeyEvent.META_CTRL_ON | KeyEvent.META_ALT_ON | KeyEvent.META_META_ON;
+    return !_move_cursor_force_fallback && (_meta_state & system_mods) == 0;
+  }
+
+  void move_cursor_fallback(int d)
+  {
     if (d < 0)
       send_key_down_up_repeat(KeyEvent.KEYCODE_DPAD_LEFT, -d);
     else
@@ -320,31 +360,72 @@ public final class KeyEventHandler
 
   void evaluate_macro(KeyValue[] keys)
   {
-    final Pointers.Modifiers empty = Pointers.Modifiers.EMPTY;
+    if (keys.length == 0)
+      return;
     // Ignore modifiers that are activated at the time the macro is evaluated
-    mods_changed(empty);
-    Pointers.Modifiers mods = empty;
-    final boolean autocap_paused = _autocap.pause();
-    for (KeyValue kv : keys)
+    mods_changed(Pointers.Modifiers.EMPTY);
+    evaluate_macro_loop(keys, 0, Pointers.Modifiers.EMPTY, _autocap.pause());
+  }
+
+  /** Evaluate the macro asynchronously to make sure event are processed in the
+      right order. */
+  void evaluate_macro_loop(final KeyValue[] keys, int i, Pointers.Modifiers mods, final boolean autocap_paused)
+  {
+    boolean should_delay = false;
+    KeyValue kv = KeyModifier.modify(keys[i], mods);
+    if (kv != null)
     {
-      kv = KeyModifier.modify(kv, mods);
-      if (kv == null)
-        continue;
       if (kv.hasFlagsAny(KeyValue.FLAG_LATCH))
       {
         // Non-special latchable keys clear latched modifiers
         if (!kv.hasFlagsAny(KeyValue.FLAG_SPECIAL))
-          mods = empty;
+          mods = Pointers.Modifiers.EMPTY;
         mods = mods.with_extra_mod(kv);
       }
       else
       {
         key_down(kv, false);
         key_up(kv, mods);
-        mods = empty;
+        mods = Pointers.Modifiers.EMPTY;
       }
+      should_delay = wait_after_macro_key(kv);
     }
-    _autocap.unpause(autocap_paused);
+    i++;
+    if (i >= keys.length) // Stop looping
+    {
+      _autocap.unpause(autocap_paused);
+    }
+    else if (should_delay)
+    {
+      // Add a delay before sending the next key to avoid race conditions
+      // causing keys to be handled in the wrong order. Notably, KeyEvent keys
+      // handling is scheduled differently than the other edit functions.
+      final int i_ = i;
+      final Pointers.Modifiers mods_ = mods;
+      _recv.getHandler().postDelayed(new Runnable() {
+        public void run()
+        {
+          evaluate_macro_loop(keys, i_, mods_, autocap_paused);
+        }
+      }, 1000/30);
+    }
+    else
+      evaluate_macro_loop(keys, i, mods, autocap_paused);
+  }
+
+  boolean wait_after_macro_key(KeyValue kv)
+  {
+    switch (kv.getKind())
+    {
+      case Keyevent:
+      case Editing:
+      case Event:
+        return true;
+      case Slider:
+        return _move_cursor_force_fallback;
+      default:
+        return false;
+    }
   }
 
   /** Repeat calls to [send_key_down_up]. */
@@ -354,12 +435,27 @@ public final class KeyEventHandler
       send_key_down_up(event_code);
   }
 
+  void cancel_selection()
+  {
+    InputConnection conn = _recv.getCurrentInputConnection();
+    if (conn == null)
+      return;
+    ExtractedText et = get_cursor_pos(conn);
+    if (et == null) return;
+    final int curs = et.selectionStart;
+    // Notify the receiver as Android's [onUpdateSelection] is not triggered.
+    if (conn.setSelection(curs, curs));
+      _recv.selection_state_changed(false);
+  }
+
   public static interface IReceiver
   {
     public void handle_event_key(KeyValue.Event ev);
     public void set_shift_state(boolean state, boolean lock);
     public void set_compose_pending(boolean pending);
+    public void selection_state_changed(boolean selection_is_ongoing);
     public InputConnection getCurrentInputConnection();
+    public Handler getHandler();
   }
 
   class Autocapitalisation_callback implements Autocapitalisation.Callback

@@ -8,8 +8,8 @@ public final class KeyModifier
 {
   /** The optional modmap takes priority over modifiers usual behaviors. Set to
       [null] to disable. */
-  private static KeyboardData.Modmap _modmap = null;
-  public static void set_modmap(KeyboardData.Modmap mm)
+  private static Modmap _modmap = null;
+  public static void set_modmap(Modmap mm)
   {
     _modmap = mm;
   }
@@ -36,7 +36,7 @@ public final class KeyModifier
       case Modifier:
         return modify(k, mod.getModifier());
       case Compose_pending:
-        return ComposeKey.apply(mod.getPendingCompose(), k);
+        return apply_compose_pending(mod.getPendingCompose(), k);
       case Hangul_initial:
         if (k.equals(mod)) // Allow typing the initial in letter form
           return KeyValue.makeStringKey(k.getString(), KeyValue.FLAG_GREYED);
@@ -82,6 +82,7 @@ public final class KeyModifier
       case HOOK_ABOVE: return apply_compose(k, ComposeKeyData.accent_hook_above);
       case DOUBLE_GRAVE: return apply_compose(k, ComposeKeyData.accent_double_grave);
       case ARROW_RIGHT: return apply_combining_char(k, "\u20D7");
+      case SELECTION_MODE: return apply_selection_mode(k);
       default: return k;
     }
   }
@@ -122,30 +123,44 @@ public final class KeyModifier
     }
   }
 
+  /** Keys that do not match any sequence are greyed. */
+  private static KeyValue apply_compose_pending(int state, KeyValue kv)
+  {
+    switch (kv.getKind())
+    {
+      case Char:
+      case String:
+        KeyValue res = ComposeKey.apply(state, kv);
+        // Grey-out characters not part of any sequence.
+        if (res == null)
+          return kv.withFlags(kv.getFlags() | KeyValue.FLAG_GREYED);
+        return res;
+      /* Tapping compose again exits the pending sequence. */
+      case Compose_pending:
+        return KeyValue.getKeyByName("compose_cancel");
+      /* These keys are not greyed. */
+      case Event:
+      case Modifier:
+        return kv;
+      /* Other keys cannot be part of sequences. */
+      default:
+        return kv.withFlags(kv.getFlags() | KeyValue.FLAG_GREYED);
+    }
+  }
+
   /** Apply the given compose state or fallback to the dead_char. */
   private static KeyValue apply_compose_or_dead_char(KeyValue k, int state, char dead_char)
   {
-    switch (k.getKind())
-    {
-      case Char:
-        char c = k.getChar();
-        KeyValue r = ComposeKey.apply(state, c);
-        if (r != null)
-          return r;
-    }
+    KeyValue r = ComposeKey.apply(state, k);
+    if (r != null)
+      return r;
     return apply_dead_char(k, dead_char);
   }
 
   private static KeyValue apply_compose(KeyValue k, int state)
   {
-    switch (k.getKind())
-    {
-      case Char:
-        KeyValue r = ComposeKey.apply(state, k.getChar());
-        if (r != null)
-          return r;
-    }
-    return k;
+    KeyValue r = ComposeKey.apply(state, k);
+    return (r != null) ? r : k;
   }
 
   private static KeyValue apply_dead_char(KeyValue k, char dead_char)
@@ -175,22 +190,23 @@ public final class KeyModifier
   {
     if (_modmap != null)
     {
-      KeyValue mapped = _modmap.shift.get(k);
+      KeyValue mapped = _modmap.get(Modmap.M.Shift, k);
       if (mapped != null)
         return mapped;
     }
+    KeyValue r = ComposeKey.apply(ComposeKeyData.shift, k);
+    if (r != null)
+      return r;
     switch (k.getKind())
     {
       case Char:
         char kc = k.getChar();
-        KeyValue r = ComposeKey.apply(ComposeKeyData.shift, kc);
-        if (r != null)
-          return r;
         char c = Character.toUpperCase(kc);
         return (kc == c) ? k : k.withChar(c);
       case String:
-        String s = Utils.capitalize_string(k.getString());
-        return KeyValue.makeStringKey(s, k.getFlags());
+        String ks = k.getString();
+        String s = Utils.capitalize_string(ks);
+        return s.equals(ks) ? k : KeyValue.makeStringKey(s, k.getFlags());
       default: return k;
     }
   }
@@ -199,7 +215,7 @@ public final class KeyModifier
   {
     if (_modmap != null)
     {
-      KeyValue mapped = _modmap.fn.get(k);
+      KeyValue mapped = _modmap.get(Modmap.M.Fn, k);
       if (mapped != null)
         return mapped;
     }
@@ -207,7 +223,8 @@ public final class KeyModifier
     switch (k.getKind())
     {
       case Char:
-        KeyValue r = ComposeKey.apply(ComposeKeyData.fn, k.getChar());
+      case String:
+        KeyValue r = ComposeKey.apply(ComposeKeyData.fn, k);
         return (r != null) ? r : k;
       case Keyevent: name = apply_fn_keyevent(k.getKeyevent()); break;
       case Event: name = apply_fn_event(k.getEvent()); break;
@@ -272,7 +289,7 @@ public final class KeyModifier
   {
     if (_modmap != null)
     {
-      KeyValue mapped = _modmap.ctrl.get(k);
+      KeyValue mapped = _modmap.get(Modmap.M.Ctrl, k);
       // Do not return the modified character right away, first turn it into a
       // key event.
       if (mapped != null)
@@ -363,6 +380,41 @@ public final class KeyModifier
         switch (k.getModifier())
         {
           case SHIFT: name = "capslock"; break;
+        }
+        break;
+      case Keyevent:
+        switch (k.getKeyevent())
+        {
+          case KeyEvent.KEYCODE_DEL: name = "delete_word"; break;
+          case KeyEvent.KEYCODE_FORWARD_DEL: name = "forward_delete_word"; break;
+        }
+        break;
+    }
+    return (name == null) ? k : KeyValue.getKeyByName(name);
+  }
+
+  private static KeyValue apply_selection_mode(KeyValue k)
+  {
+    String name = null;
+    switch (k.getKind())
+    {
+      case Char:
+        switch (k.getChar())
+        {
+          case ' ': name = "selection_cancel"; break;
+        }
+        break;
+      case Slider:
+        switch (k.getSlider())
+        {
+          case Cursor_left: name = "selection_cursor_left"; break;
+          case Cursor_right: name = "selection_cursor_right"; break;
+        }
+        break;
+      case Keyevent:
+        switch (k.getKeyevent())
+        {
+          case KeyEvent.KEYCODE_ESCAPE: name = "selection_cancel"; break;
         }
         break;
     }

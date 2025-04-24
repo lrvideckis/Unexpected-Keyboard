@@ -59,6 +59,7 @@ public final class KeyValue implements Comparable<KeyValue>
     BREVE,
     BAR,
     FN,
+    SELECTION_MODE,
   } // Last is be applied first
 
   public static enum Editing
@@ -75,6 +76,9 @@ public final class KeyValue implements Comparable<KeyValue>
     SHARE,
     ASSIST,
     AUTOFILL,
+    DELETE_WORD,
+    FORWARD_DELETE_WORD,
+    SELECTION_CANCEL,
   }
 
   public static enum Placeholder
@@ -95,7 +99,6 @@ public final class KeyValue implements Comparable<KeyValue>
     Modifier, Editing, Placeholder,
     String, // [_payload] is also the string to output, value is unused.
     Slider, // [_payload] is a [KeyValue.Slider], value is slider repeatition.
-    StringWithSymbol, // [_payload] is a [KeyValue.StringWithSymbol], value is unused.
     Macro, // [_payload] is a [KeyValue.Macro], value is unused.
   }
 
@@ -225,12 +228,6 @@ public final class KeyValue implements Comparable<KeyValue>
     return ((int)(short)(_code & VALUE_BITS));
   }
 
-  /** Defined only when [getKind() == Kind.StringWithSymbol]. */
-  public String getStringWithSymbol()
-  {
-    return ((StringWithSymbol)_payload).str;
-  }
-
   /** Defined only when [getKind() == Kind.Macro]. */
   public KeyValue[] getMacro()
   {
@@ -240,7 +237,8 @@ public final class KeyValue implements Comparable<KeyValue>
   /* Update the char and the symbol. */
   public KeyValue withChar(char c)
   {
-    return new KeyValue(String.valueOf(c), Kind.Char, c, getFlags());
+    return new KeyValue(String.valueOf(c), Kind.Char, c,
+        getFlags() & ~(FLAG_KEY_FONT | FLAG_SMALLER_FONT));
   }
 
   public KeyValue withKeyevent(int code)
@@ -250,7 +248,31 @@ public final class KeyValue implements Comparable<KeyValue>
 
   public KeyValue withFlags(int f)
   {
-    return new KeyValue(_payload, (_code & KIND_BITS), (_code & VALUE_BITS), f);
+    return new KeyValue(_payload, _code, _code, f);
+  }
+
+  public KeyValue withSymbol(String symbol)
+  {
+    int flags = getFlags() & ~(FLAG_KEY_FONT | FLAG_SMALLER_FONT);
+    switch (getKind())
+    {
+      case Char:
+      case Keyevent:
+      case Event:
+      case Compose_pending:
+      case Hangul_initial:
+      case Hangul_medial:
+      case Modifier:
+      case Editing:
+      case Placeholder:
+        if (symbol.length() > 1)
+          flags |= FLAG_SMALLER_FONT;
+        return new KeyValue(symbol, _code, _code, flags);
+      case Macro:
+        return makeMacro(symbol, getMacro(), flags);
+      default:
+        return makeMacro(symbol, new KeyValue[]{ this }, flags);
+    }
   }
 
   @Override
@@ -294,7 +316,6 @@ public final class KeyValue implements Comparable<KeyValue>
     return "[KeyValue " + getKind().toString() + "+" + getFlags() + "+" + value + " \"" + getString() + "\"]";
   }
 
-  /** [value] is an unsigned integer. */
   private KeyValue(Comparable p, int kind, int value, int flags)
   {
     if (p == null)
@@ -462,14 +483,10 @@ public final class KeyValue implements Comparable<KeyValue>
       return new KeyValue(str, Kind.String, 0, flags | FLAG_SMALLER_FONT);
   }
 
-  public static KeyValue makeStringKeyWithSymbol(String str, String symbol, int flags)
-  {
-    return new KeyValue(new StringWithSymbol(str, symbol),
-        Kind.StringWithSymbol, 0, flags);
-  }
-
   public static KeyValue makeMacro(String symbol, KeyValue[] keys, int flags)
   {
+    if (symbol.length() > 1)
+      flags |= FLAG_SMALLER_FONT;
     return new KeyValue(new Macro(keys, symbol), Kind.Macro, 0, flags);
   }
 
@@ -479,30 +496,21 @@ public final class KeyValue implements Comparable<KeyValue>
     return new KeyValue("", Kind.Modifier, mod.ordinal(), 0);
   }
 
-  public static KeyValue parseKeyDefinition(String str)
-  {
-    if (str.length() < 2 || str.charAt(0) != ':')
-      return makeStringKey(str);
-    try
-    {
-      return KeyValueParser.parse(str);
-    }
-    catch (KeyValueParser.ParseError _e)
-    {
-      return makeStringKey(str);
-    }
-  }
-
-  /**
-   * Return a key by its name. If the given name doesn't correspond to a key
-   * defined in this function, it is passed to [parseStringKey] as a fallback.
-   */
+  /** Return a key by its name. If the given name doesn't correspond to any
+      special key, it is parsed with [KeyValueParser]. */
   public static KeyValue getKeyByName(String name)
   {
     KeyValue k = getSpecialKeyByName(name);
-    if (k == null)
-      return parseKeyDefinition(name);
-    return k;
+    if (k != null)
+      return k;
+    try
+    {
+      return KeyValueParser.parse(name);
+    }
+    catch (KeyValueParser.ParseError _e)
+    {
+      return makeStringKey(name);
+    }
   }
 
   public static KeyValue getSpecialKeyByName(String name)
@@ -703,10 +711,15 @@ public final class KeyValue implements Comparable<KeyValue>
       case "pasteAsPlainText": return editingKey(0xE035, Editing.PASTE_PLAIN);
       case "undo": return editingKey(0xE036, Editing.UNDO);
       case "redo": return editingKey(0xE037, Editing.REDO);
+      case "delete_word": return editingKey(0xE01B, Editing.DELETE_WORD);
+      case "forward_delete_word": return editingKey(0xE01C, Editing.FORWARD_DELETE_WORD);
       case "cursor_left": return sliderKey(Slider.Cursor_left, 1);
       case "cursor_right": return sliderKey(Slider.Cursor_right, 1);
       case "cursor_up": return sliderKey(Slider.Cursor_up, 1);
       case "cursor_down": return sliderKey(Slider.Cursor_down, 1);
+      case "selection_cancel": return editingKey("Esc", Editing.SELECTION_CANCEL, FLAG_SMALLER_FONT);
+      case "selection_cursor_left": return sliderKey(Slider.Selection_cursor_left, -1); // Move the left side of the selection
+      case "selection_cursor_right": return sliderKey(Slider.Selection_cursor_right, 1);
       // These keys are not used
       case "replaceText": return editingKey("repl", Editing.REPLACE);
       case "textAssist": return editingKey(0xE038, Editing.ASSIST);
@@ -756,6 +769,41 @@ public final class KeyValue implements Comparable<KeyValue>
       case "௲": case "௳":
         return makeStringKey(name, FLAG_SMALLER_FONT);
 
+      /* Sinhala letters to reduced size */
+      case "අ": case "ආ": case "ඇ": case "ඈ": case "ඉ":
+      case "ඊ": case "උ": case "ඌ": case "ඍ": case "ඎ":
+      case "ඏ": case "ඐ": case "එ": case "ඒ": case "ඓ":
+      case "ඔ": case "ඕ": case "ඖ": case "ක": case "ඛ":
+      case "ග": case "ඝ": case "ඞ": case "ඟ": case "ච":
+      case "ඡ": case "ජ": case "ඣ": case "ඤ": case "ඥ":
+      case "ඦ": case "ට": case "ඨ": case "ඩ": case "ඪ":
+      case "ණ": case "ඬ": case "ත": case "ථ": case "ද":
+      case "ධ": case "න": case "ඳ": case "ප": case "ඵ":
+      case "බ": case "භ": case "ම": case "ඹ": case "ය":
+      case "ර": case "ල": case "ව": case "ශ": case "ෂ":
+      case "ස": case "හ": case "ළ": case "ෆ":
+      /* Astrological numbers */
+      case "෦": case "෧": case "෨": case "෩": case "෪":
+      case "෫": case "෬": case "෭": case "෮": case "෯":
+      case "ෲ": case "ෳ":
+      /* Diacritics */
+      case "\u0d81": case "\u0d82": case "\u0d83": case "\u0dca":
+      case "\u0dcf": case "\u0dd0": case "\u0dd1": case "\u0dd2":
+      case "\u0dd3": case "\u0dd4": case "\u0dd6": case "\u0dd8":
+      case "\u0dd9": case "\u0dda": case "\u0ddb": case "\u0ddc":
+      case "\u0ddd": case "\u0dde": case "\u0ddf":
+      /* Archaic digits */
+      case "𑇡": case "𑇢": case "𑇣": case "𑇤": case "𑇥":
+      case "𑇦": case "𑇧": case "𑇨": case "𑇩": case "𑇪":
+      case "𑇫": case "𑇬": case "𑇭": case "𑇮": case "𑇯":
+      case "𑇰": case "𑇱": case "𑇲": case "𑇳": case "𑇴":
+      /* Exta */
+      case "෴": case "₨":  // Rupee is not exclusively Sinhala sign
+        return makeStringKey(name, FLAG_SMALLER_FONT);
+
+      /* Internal keys */
+      case "selection_mode": return makeInternalModifier(Modifier.SELECTION_MODE);
+
       default: return null;
     }
   }
@@ -767,35 +815,14 @@ public final class KeyValue implements Comparable<KeyValue>
       throw new RuntimeException("Assertion failure");
   }
 
-  public static final class StringWithSymbol implements Comparable<StringWithSymbol>
-  {
-    public final String str;
-    final String _symbol;
-
-    public StringWithSymbol(String _str, String _sym)
-    {
-      str = _str;
-      _symbol = _sym;
-    }
-
-    @Override
-    public String toString() { return _symbol; }
-
-    @Override
-    public int compareTo(StringWithSymbol snd)
-    {
-      int d = str.compareTo(snd.str);
-      if (d != 0) return d;
-      return _symbol.compareTo(snd._symbol);
-    }
-  };
-
   public static enum Slider
   {
     Cursor_left(0xE008),
     Cursor_right(0xE006),
     Cursor_up(0xE005),
-    Cursor_down(0xE007);
+    Cursor_down(0xE007),
+    Selection_cursor_left(0xE008),
+    Selection_cursor_right(0xE006);
 
     final String symbol;
 
@@ -821,6 +848,7 @@ public final class KeyValue implements Comparable<KeyValue>
 
     public String toString() { return _symbol; }
 
+    @Override
     public int compareTo(Macro snd)
     {
       int d = keys.length - snd.keys.length;

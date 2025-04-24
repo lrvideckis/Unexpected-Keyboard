@@ -139,6 +139,13 @@ public class Keyboard2View extends View
     set_fake_ptr_latched(_compose_key, _compose_kv, pending, false);
   }
 
+  /** Called from [Keybard2.onUpdateSelection].  */
+  public void set_selection_state(boolean selection_state)
+  {
+    set_fake_ptr_latched(KeyboardData.Key.EMPTY,
+        KeyValue.getKeyByName("selection_mode"), selection_state, true);
+  }
+
   public KeyValue modifyKey(KeyValue k, Pointers.Modifiers mods)
   {
     return KeyModifier.modify(k, mods);
@@ -296,15 +303,15 @@ public class Keyboard2View extends View
       DisplayMetrics dm = getContext().getResources().getDisplayMetrics();
       width = dm.widthPixels;
     }
-    int height =
-      (int)(_config.keyHeight * _keyboard.keysHeight
-          + _config.marginTop + _marginBottom);
-    setMeasuredDimension(width, height);
     _marginLeft = Math.max(_config.horizontal_margin, insets_left);
     _marginRight = Math.max(_config.horizontal_margin, insets_right);
     _marginBottom = _config.margin_bottom + insets_bottom;
     _keyWidth = (width - _marginLeft - _marginRight) / _keyboard.keysWidth;
     _tc = new Theme.Computed(_theme, _config, _keyWidth);
+    int height =
+      (int)(_config.keyHeight * _keyboard.keysHeight
+          + _config.marginTop + _marginBottom);
+    setMeasuredDimension(width, height);
   }
 
   @Override
@@ -434,8 +441,7 @@ public class Keyboard2View extends View
     if (kv == null)
       return;
     float textSize = scaleTextSize(kv, _config.labelTextSize, keyH);
-    Paint p = tc.label_paint(kv.hasFlagsAny(KeyValue.FLAG_KEY_FONT), textSize);
-    p.setColor(labelColor(kv, isKeyDown, false));
+    Paint p = tc.label_paint(kv.hasFlagsAny(KeyValue.FLAG_KEY_FONT), labelColor(kv, isKeyDown, false), textSize);
     canvas.drawText(kv.getString(), x, (keyH - p.ascent() - p.descent()) / 2f + y, p);
   }
 
@@ -449,8 +455,7 @@ public class Keyboard2View extends View
     if (kv == null)
       return;
     float textSize = scaleTextSize(kv, _config.sublabelTextSize, keyH);
-    Paint p = tc.sublabel_paint(kv.hasFlagsAny(KeyValue.FLAG_KEY_FONT), textSize, a);
-    p.setColor(labelColor(kv, isKeyDown, true));
+    Paint p = tc.sublabel_paint(kv.hasFlagsAny(KeyValue.FLAG_KEY_FONT), labelColor(kv, isKeyDown, true), textSize, a);
     float subPadding = _config.keyPadding;
     if (v == Vertical.CENTER)
       y += (keyH - p.ascent() - p.descent()) / 2f;

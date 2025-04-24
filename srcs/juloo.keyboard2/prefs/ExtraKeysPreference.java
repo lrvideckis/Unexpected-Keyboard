@@ -3,6 +3,7 @@ package juloo.keyboard2.prefs;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
+import android.os.Build.VERSION;
 import android.preference.CheckBoxPreference;
 import android.preference.PreferenceCategory;
 import android.util.AttributeSet;
@@ -72,6 +73,8 @@ public class ExtraKeysPreference extends PreferenceCategory
     "pasteAsPlainText",
     "undo",
     "redo",
+    "delete_word",
+    "forward_delete_word",
     "superscript",
     "subscript",
     "f11_placeholder",
@@ -177,8 +180,15 @@ public class ExtraKeysPreference extends PreferenceCategory
         id = R.string.key_descr_redo;
         additional_info = format_key_combination(new String[]{"fn", "undo"});
         break;
+      case "delete_word":
+        id = R.string.key_descr_delete_word;
+        additional_info = format_key_combination_gesture(res, "backspace");
+        break;
+      case "forward_delete_word":
+        id = R.string.key_descr_forward_delete_word;
+        additional_info = format_key_combination_gesture(res, "forward_delete");
+        break;
       case "selectAll": id = R.string.key_descr_selectAll; break;
-      case "shareText": id = R.string.key_descr_shareText; break;
       case "subscript": id = R.string.key_descr_subscript; break;
       case "superscript": id = R.string.key_descr_superscript; break;
       case "switch_greekmath": id = R.string.key_descr_switch_greekmath; break;
@@ -276,6 +286,7 @@ public class ExtraKeysPreference extends PreferenceCategory
     return kv.getString();
   }
 
+  /** Format a key combination */
   static String format_key_combination(String[] keys)
   {
     StringBuilder out = new StringBuilder();
@@ -287,60 +298,45 @@ public class ExtraKeysPreference extends PreferenceCategory
     return out.toString();
   }
 
+  /** Explain a gesture on a key */
+  static String format_key_combination_gesture(Resources res, String key_name)
+  {
+    return res.getString(R.string.key_descr_gesture) + " + "
+      + KeyValue.getKeyByName(key_name).getString();
+  }
+
+  /** Place an extra key next to the key specified by the first argument, on
+      bottom-right preferably or on the bottom-left. If the specified key is not
+      on the layout, place on the specified row and column. */
+  static KeyboardData.PreferredPos mk_preferred_pos(String next_to_key, int row, int col, boolean prefer_bottom_right)
+  {
+    KeyValue next_to = (next_to_key == null) ? null : KeyValue.getKeyByName(next_to_key);
+    int d1, d2; // Preferred direction and fallback direction
+    if (prefer_bottom_right) { d1 = 4; d2 = 3; } else { d1 = 3; d2 = 4; }
+    return new KeyboardData.PreferredPos(next_to,
+            new KeyboardData.KeyPos[]{
+              new KeyboardData.KeyPos(row, col, d1),
+              new KeyboardData.KeyPos(row, col, d2),
+              new KeyboardData.KeyPos(row, -1, d1),
+              new KeyboardData.KeyPos(row, -1, d2),
+              new KeyboardData.KeyPos(-1, -1, -1),
+            });
+  }
+
   static KeyboardData.PreferredPos key_preferred_pos(String key_name)
   {
     switch (key_name)
     {
-      case "cut":
-        return new KeyboardData.PreferredPos(KeyValue.getKeyByName("x"),
-            new KeyboardData.KeyPos[]{
-              new KeyboardData.KeyPos(2, 2, 8),
-              new KeyboardData.KeyPos(2, -1, 8),
-              new KeyboardData.KeyPos(-1, -1, 8),
-            });
-      case "copy":
-        return new KeyboardData.PreferredPos(KeyValue.getKeyByName("c"),
-            new KeyboardData.KeyPos[]{
-              new KeyboardData.KeyPos(2, 3, 8),
-              new KeyboardData.KeyPos(2, -1, 8),
-              new KeyboardData.KeyPos(-1, -1, 8),
-            });
-      case "paste":
-        return new KeyboardData.PreferredPos(KeyValue.getKeyByName("v"),
-            new KeyboardData.KeyPos[]{
-              new KeyboardData.KeyPos(2, 4, 8),
-              new KeyboardData.KeyPos(2, -1, 8),
-              new KeyboardData.KeyPos(-1, -1, 8),
-            });
-      case "undo":
-        return new KeyboardData.PreferredPos(KeyValue.getKeyByName("z"),
-            new KeyboardData.KeyPos[]{
-              new KeyboardData.KeyPos(2, 1, 8),
-              new KeyboardData.KeyPos(2, -1, 8),
-              new KeyboardData.KeyPos(-1, -1, 8),
-            });
-      case "redo":
-        return new KeyboardData.PreferredPos(KeyValue.getKeyByName("y"),
-            new KeyboardData.KeyPos[]{
-              new KeyboardData.KeyPos(0, -1, 8),
-              new KeyboardData.KeyPos(-1, -1, 8),
-            });
-      case "f11_placeholder":
-        return new KeyboardData.PreferredPos(KeyValue.getKeyByName("9"),
-            new KeyboardData.KeyPos[]{
-              new KeyboardData.KeyPos(0, 8, 3),
-              new KeyboardData.KeyPos(0, 8, 4),
-              new KeyboardData.KeyPos(0, -1, 3),
-              new KeyboardData.KeyPos(0, -1, 4),
-            });
-      case "f12_placeholder":
-        return new KeyboardData.PreferredPos(KeyValue.getKeyByName("0"),
-            new KeyboardData.KeyPos[]{
-              new KeyboardData.KeyPos(0, 9, 3),
-              new KeyboardData.KeyPos(0, 9, 4),
-              new KeyboardData.KeyPos(0, -1, 3),
-              new KeyboardData.KeyPos(0, -1, 4),
-            });
+      case "cut": return mk_preferred_pos("x", 2, 2, true);
+      case "copy": return mk_preferred_pos("c", 2, 3, true);
+      case "paste": return mk_preferred_pos("v", 2, 4, true);
+      case "undo": return mk_preferred_pos("z", 2, 1, true);
+      case "selectAll": return mk_preferred_pos("a", 1, 0, true);
+      case "redo": return mk_preferred_pos("y", 0, 5, true);
+      case "f11_placeholder": return mk_preferred_pos("9", 0, 8, false);
+      case "f12_placeholder": return mk_preferred_pos("0", 0, 9, false);
+      case "delete_word": return mk_preferred_pos("backspace", -1, -1, false);
+      case "forward_delete_word": return mk_preferred_pos("backspace", -1, -1, true);
     }
     return KeyboardData.PreferredPos.DEFAULT;
   }
@@ -397,6 +393,8 @@ public class ExtraKeysPreference extends PreferenceCategory
       setKey(pref_key_of_key_name(key_name));
       setDefaultValue(default_checked);
       setTitle(title);
+      if (VERSION.SDK_INT >= 26)
+        setSingleLineTitle(false);
     }
 
     @Override
