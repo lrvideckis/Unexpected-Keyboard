@@ -3,8 +3,8 @@
   <key c="switch_numeric" n="config" s="switch_emoji" w="fn" e="ctrl"/>
   <key c="left" nw="&lt;-:ctrl,left" sw="&lt;&lt;-:ctrl,left,ctrl,left" ne="-&gt;:ctrl,right" se="-&gt;&gt;:ctrl,right,ctrl,right"/>
   <key c="right" nw="&lt;-:ctrl,left" sw="&lt;&lt;-:ctrl,left,ctrl,left" ne="-&gt;:ctrl,right" se="-&gt;&gt;:ctrl,right,ctrl,right"/>
-  <key width="2" c="space"/>
-  <key c="switch_forward" n="↑:ctrl,home" s="↓:ctrl,end" w="undo" e="redo"/>
+  <key width="2" c="space" sw="↑:ctrl,home" se="↓:ctrl,end"/>
+  <key c="switch_forward" w="undo" e="redo"/>
   <key c="selectAll" e="switch_clipboard" n="copy" s="paste"/>
   <key c="enter" n="action"/>
 </row>
