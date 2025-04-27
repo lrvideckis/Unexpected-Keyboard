@@ -15,7 +15,7 @@
     <key              width="0.9" c="a" anticircle="4"/>
     <key              width="0.9" c="r" ne="x" sw="c" anticircle="5"/>
     <key              width="0.9" c="s" nw="{" ne="}" sw="[" se="]" anticircle="6"/>
-    <key              width="0.9" c="m" nw=":" ne="|" sw=";" se="\\"/>
+    <key              width="0.9" c="m" nw=":" ne="|" sw=";" se="\\\\"/>
     <key              width="0.9"/>
   </row>
   <row>
