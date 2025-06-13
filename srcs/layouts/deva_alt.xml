@@ -19,7 +19,7 @@
     <key              width="0.9" c="ो" nw="ओ" ne="औ" sw="बायेक" se="ौ"/>
   </row>
   <row>
-    <key c="ऽ" se="\@"/>
+    <key c="ऽ"/>
     <key c="ँ" nw="₹" ne="॑" sw="ॖ" se="॓" anticircle="०"/>
     <key c="ं" nw="ॐ" ne="।" sw="ः" se="&quot;" anticircle="१"/>
     <key c="्" nw="," ne=";" sw="!" se="\?" anticircle="२"/>
