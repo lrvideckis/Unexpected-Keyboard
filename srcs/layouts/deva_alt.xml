@@ -10,10 +10,10 @@
     <key              width="0.9" c="ह" nw="श" ne="ळ" sw="स"  se="ष"/>
   </row>
   <row>
-    <key shift="0.35" width="0.9" c="ा" nw="अ" ne="आ" sw="ठीक"/>
+    <key shift="0.35" width="0.9" c="ा" nw="अ" ne="आ" sw="ठीक है"/>
     <key              width="0.9" c="ि" nw="इ" sw="अच्छा"/>
     <key              width="0.9" c="ी" nw="ई" sw="नहीं" anticircle="४"/>
-    <key              width="0.9" c="ु" nw="उ" ne="ऊ" sw="हाँ" se="ू" anticircle="५"/>
+    <key              width="0.9" c="ु" nw="उ" ne="ऊ" sw="हाँ जी" se="ू" anticircle="५"/>
     <key              width="0.9" c="े" nw="ए" ne="ऋ" sw="बिल्कुल" se="ृ" anticircle="६"/>
     <key              width="0.9" c="ै" nw="ऐ" ne="ऌ" sw="झंव" se="ॢ"/>
     <key              width="0.9" c="ो" nw="ओ" ne="औ" sw="बायेक" se="ौ"/>
