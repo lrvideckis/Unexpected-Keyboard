@@ -22,8 +22,8 @@
     <key width="0.75" key0="switch_greekmath"/>
     <key width="0.75" key0="shift" key2="fn" key4="loc alt"/>
     <key key0="1" key1="superscript" key2="ordinal" key3="subscript"/>
-    <key key0="2"/>
-    <key key0="3"/>
+    <key key0="2" sw="Luke" se="Videckis" nw="lrvideckis" ne="lukevideckis"/>
+    <key key0="3" sw="@gmail" se=".com" nw="codeforces"/>
     <key width="1.5" key0="backspace" key2="delete"/>
   </row>
   <row height="0.95">

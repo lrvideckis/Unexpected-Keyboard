@@ -1,22 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <keyboard name="UOINDL" script="latin">
   <row>
-    <key shift="0.35" width="0.9" c="u"/>
-    <key              width="0.9" c="o" se="'"/>
-    <key              width="0.9" c="i" anticircle="7"/>
-    <key              width="0.9" c="n" ne="z" sw="v" anticircle="8"/>
-    <key              width="0.9" c="d" sw="p" anticircle="9"/>
-    <key              width="0.9" c="l" sw="j"/>
-    <key              width="0.9" c=":str symbol='lrv':'lrvideckis'" nw="lukevideckis" ne="@gmail" sw="codeforces" se=".com"/>
+    <key c="u"/>
+    <key c="o" se="'"/>
+    <key c="i" anticircle="7"/>
+    <key c="n" ne="z" sw="v" anticircle="8"/>
+    <key c="d" sw="p" anticircle="9"/>
+    <key c="l" sw="j"/>
   </row>
   <row>
-    <key shift="0.35" width="0.9" c="g"/>
-    <key              width="0.9" c="t" nw="q" se="k"/>
-    <key              width="0.9" c="a" anticircle="4"/>
-    <key              width="0.9" c="r" ne="x" sw="c" anticircle="5"/>
-    <key              width="0.9" c="s" anticircle="6"/>
-    <key              width="0.9" c="m"/>
-    <key              width="0.9" c="Luke" sw="Videckis" nw="6305141087"/>
+    <key c="g"/>
+    <key c="t" nw="q" se="k"/>
+    <key c="a" anticircle="4"/>
+    <key c="r" ne="x" sw="c" anticircle="5"/>
+    <key c="s" anticircle="6"/>
+    <key c="m"/>
   </row>
   <row>
     <key c="shift" n="capslock" e="ctrl" />
@@ -24,6 +22,6 @@
     <key c="e" sw="," se="." anticircle="1"/>
     <key c="h" ne="b" sw="f" anticircle="2"/>
     <key c="w" sw="!" se="?" anticircle="3"/>
-    <key width="2" c="backspace" n="↑x:shift,ctrl,home,backspace" s="↓x:shift,ctrl,end,backspace" w="&lt;x:ctrl,backspace"/>
+    <key c="backspace" n="↑x:shift,ctrl,home,backspace" s="↓x:shift,ctrl,end,backspace" w="&lt;x:ctrl,backspace"/>
   </row>
 </keyboard>

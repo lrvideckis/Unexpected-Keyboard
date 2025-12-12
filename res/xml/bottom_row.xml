@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<row height="0.95">
+<row>
   <key c="switch_numeric" n="up" s="down" e="switch_emoji" w="fn"/>
   <key c="left" nw="&lt;-:ctrl,left" sw="home" ne="-&gt;:ctrl,right" se="end"/>
   <key c="right" nw="&lt;-:ctrl,left" sw="home" ne="-&gt;:ctrl,right" se="end"/>
