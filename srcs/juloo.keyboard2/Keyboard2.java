@@ -265,9 +265,9 @@ public class Keyboard2 extends InputMethodService
       case InputType.TYPE_CLASS_NUMBER:
       case InputType.TYPE_CLASS_PHONE:
       case InputType.TYPE_CLASS_DATETIME:
-        if (_config.pin_entry_enabled)
+        if (_config.selected_number_layout == NumberLayout.PIN)
           return loadPinentry(R.xml.pin);
-        else
+        else if (_config.selected_number_layout == NumberLayout.NUMBER)
           return loadNumpad(R.xml.numeric);
       default:
         break;
@@ -295,6 +295,7 @@ public class Keyboard2 extends InputMethodService
       ((ViewGroup)parent).removeView(v);
     super.setInputView(v);
     updateSoftInputWindowLayoutParams();
+    v.requestApplyInsets();
   }
 
 
@@ -315,6 +316,7 @@ public class Keyboard2 extends InputMethodService
         WindowManager.LayoutParams.LAYOUT_IN_DISPLAY_CUTOUT_MODE_ALWAYS;
       // Allow to draw behind system bars
       wattrs.setFitInsetsTypes(0);
+      window.setDecorFitsSystemWindows(false);
     }
     updateLayoutHeightOf(window, ViewGroup.LayoutParams.MATCH_PARENT);
     final View inputArea = window.findViewById(android.R.id.inputArea);

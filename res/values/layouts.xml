@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='utf-8'?>
 <resources>
   <!-- DO NOT EDIT. This file is generated, run 'gradle genLayoutsList'. -->
   <string-array name="pref_layout_values">
@@ -17,9 +17,11 @@
     <item>beng_national</item>
     <item>beng_provat</item>
     <item>cyrl_fcuzhen_mn</item>
+    <item>cyrl_jcuken_as</item>
     <item>cyrl_jcuken_kk</item>
     <item>cyrl_jcuken_ru</item>
     <item>cyrl_jcuken_uk</item>
+    <item>cyrl_lynyertdz_mk</item>
     <item>cyrl_lynyertz_sr</item>
     <item>cyrl_ueishsht</item>
     <item>cyrl_yaverti</item>
@@ -36,6 +38,7 @@
     <item>hebr_1_il</item>
     <item>hebr_2_il</item>
     <item>kann_kannada</item>
+    <item>latin_kbdtuf_tr</item>
     <item>latn_azerty_be</item>
     <item>latn_azerty_fr</item>
     <item>latn_bepo_fr</item>
@@ -103,9 +106,11 @@
     <item>বাংলা (জাতীয়)</item>
     <item>বাংলা (প্রভাত)</item>
     <item>ФЦУЖЭН (Монгол)</item>
+    <item>ЈЦУКЕН (Всисловѣнск)</item>
     <item>ЙЦУКЕН (Қазақша)</item>
     <item>ЙЦУКЕН (Русский)</item>
     <item>ЙЦУКЕН (Українська)</item>
+    <item>ЉЊЕРТЅ (Македонски)</item>
     <item>ЉЊЕРТЗ (Српски)</item>
     <item>УЕИШЩ (Български, БДС)</item>
     <item>ЯВЕРТЪ</item>
@@ -122,6 +127,7 @@
     <item>Hebrew 1</item>
     <item>Hebrew 2</item>
     <item>ಕನ್ನಡ - Kannada</item>
+    <item>Turkish F</item>
     <item>AZERTY (Belgian)</item>
     <item>AZERTY (Français)</item>
     <item>BEPO (Français)</item>
@@ -189,9 +195,11 @@
     <item>@xml/beng_national</item>
     <item>@xml/beng_provat</item>
     <item>@xml/cyrl_fcuzhen_mn</item>
+    <item>@xml/cyrl_jcuken_as</item>
     <item>@xml/cyrl_jcuken_kk</item>
     <item>@xml/cyrl_jcuken_ru</item>
     <item>@xml/cyrl_jcuken_uk</item>
+    <item>@xml/cyrl_lynyertdz_mk</item>
     <item>@xml/cyrl_lynyertz_sr</item>
     <item>@xml/cyrl_ueishsht</item>
     <item>@xml/cyrl_yaverti</item>
@@ -208,6 +216,7 @@
     <item>@xml/hebr_1_il</item>
     <item>@xml/hebr_2_il</item>
     <item>@xml/kann_kannada</item>
+    <item>@xml/latin_kbdtuf_tr</item>
     <item>@xml/latn_azerty_be</item>
     <item>@xml/latn_azerty_fr</item>
     <item>@xml/latn_bepo_fr</item>
