@@ -2,22 +2,22 @@ import com.android.build.gradle.internal.api.BaseVariantOutputImpl
 import java.io.FileOutputStream
 
 plugins {
-  id("com.android.application") version "8.13.0"
+  id("com.android.application") version "8.13.2"
 }
 
 dependencies {
-  implementation("androidx.window:window-java:1.3.0")
-  implementation("androidx.core:core:1.16.0")
+  implementation("androidx.window:window-java:1.5.1")
+  implementation("androidx.core:core:1.17.0")
   testImplementation("junit:junit:4.13.2")
 }
 
 android {
   namespace = "juloo.keyboard2"
-  compileSdkVersion = "android-35"
+  compileSdkVersion = "android-36"
 
   defaultConfig {
     applicationId = "juloo.keyboard2"
-    minSdk = 21
+    minSdk = 23
     targetSdk { version = release(35) }
     versionCode = 50
     versionName = "1.32.1"
