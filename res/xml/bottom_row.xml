@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <row>
-  <key c="switch_numeric" n="up" s="down" e="switch_emoji" w="fn"/>
-  <key c="left" nw="&lt;-:ctrl,left" sw="home" ne="-&gt;:ctrl,right" se="end"/>
-  <key c="right" nw="&lt;-:ctrl,left" sw="home" ne="-&gt;:ctrl,right" se="end"/>
+  <key c="switch_numeric" e="switch_emoji" s="fn"/>
+  <key c="left" nw="&lt;-:ctrl,left" sw="sh&lt;-:shift,ctrl,left" ne="-&gt;:ctrl,right" se="sh-&gt;:shift,ctrl,right"/>
+  <key c="right" nw="&lt;-:ctrl,left" sw="sh&lt;-:shift,ctrl,left" ne="-&gt;:ctrl,right" se="sh-&gt;:shift,ctrl,right"/>
   <key width="2" c="space"/>
   <key c="switch_forward" n="↑:ctrl,home" s="↓:ctrl,end" w="undo" e="redo"/>
   <key c="selectAll" w="config" e="switch_clipboard" n="copy" s="paste"/>
