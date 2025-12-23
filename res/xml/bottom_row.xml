@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <row>
-  <key c="switch_numeric" e="switch_emoji" s="fn"/>
+  <key c="switch_numeric" e="switch_emoji" s="fn" n="ctrl"/>
   <key c="left" nw="&lt;-:ctrl,left" sw="sh&lt;-:shift,ctrl,left" ne="-&gt;:ctrl,right" se="sh-&gt;:shift,ctrl,right"/>
   <key c="right" nw="&lt;-:ctrl,left" sw="sh&lt;-:shift,ctrl,left" ne="-&gt;:ctrl,right" se="sh-&gt;:shift,ctrl,right"/>
   <key width="2" c="space"/>
