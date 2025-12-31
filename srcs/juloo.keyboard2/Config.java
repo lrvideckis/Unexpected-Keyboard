@@ -73,10 +73,10 @@ public final class Config
   public int clipboard_history_duration;
 
   // Dynamically set
+  /** Configuration options implied by the connected editor. */
+  public EditorConfig editor_config;
+  public boolean should_show_candidates_view;
   public boolean shouldOfferVoiceTyping;
-  public String actionLabel; // Might be 'null'
-  public int actionId; // Meaningful only when 'actionLabel' isn't 'null'
-  public boolean swapEnterActionKey; // Swap the "enter" and "action" keys
   public ExtraKeys extra_keys_subtype;
   public Map<KeyValue, KeyboardData.PreferredPos> extra_keys_param;
   public Map<KeyValue, KeyboardData.PreferredPos> extra_keys_custom;
@@ -93,6 +93,7 @@ public final class Config
   private Config(SharedPreferences prefs, Resources res, IKeyEventHandler h, Boolean foldableUnfolded)
   {
     _prefs = prefs;
+    editor_config = new EditorConfig();
     // static values
     marginTop = res.getDimension(R.dimen.margin_top);
     keyPadding = res.getDimension(R.dimen.key_padding);
@@ -101,10 +102,8 @@ public final class Config
     // from prefs
     refresh(res, foldableUnfolded);
     // initialized later
+    should_show_candidates_view = false;
     shouldOfferVoiceTyping = false;
-    actionLabel = null;
-    actionId = 0;
-    swapEnterActionKey = false;
     extra_keys_subtype = null;
     handler = h;
   }
@@ -210,7 +209,7 @@ public final class Config
   public void set_clipboard_history_enabled(boolean e)
   {
     clipboard_history_enabled = e;
-    _prefs.edit().putBoolean("clipboard_history_enabled", e).commit();
+    _prefs.edit().putBoolean("clipboard_history_enabled", e).apply();
   }
 
   private float get_dip_pref(DisplayMetrics dm, String pref_name, float def)
@@ -294,6 +293,7 @@ public final class Config
     public void key_down(KeyValue value, boolean is_swipe);
     public void key_up(KeyValue value, Pointers.Modifiers mods);
     public void mods_changed(Pointers.Modifiers mods);
+    public void suggestion_entered(String text);
   }
 
   /** Config migrations. */
