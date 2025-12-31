@@ -85,8 +85,8 @@
     <item>latn_qwertz_hu</item>
     <item>latn_qwertz_sk</item>
     <item>latn_qwertz_sq</item>
-    <item>latn_uoindl_us</item>
     <item>latn_qzerty_it</item>
+    <item>latn_uoindl_us</item>
     <item>latn_workman_us</item>
     <item>shaw_imperial_en</item>
     <item>sinhala_phonetic</item>
@@ -178,8 +178,8 @@
     <item>QWERTZ (Magyar)</item>
     <item>QWERTZ (Slovak)</item>
     <item>QWERTZ (Albanian)</item>
-    <item>UOINDL</item>
     <item>QZERTY (Italiano)</item>
+    <item>UOINDL</item>
     <item>WORKMAN (US)</item>
     <item>Shaw Imperial</item>
     <item>සිංහල</item>
@@ -271,8 +271,8 @@
     <item>@xml/latn_qwertz_hu</item>
     <item>@xml/latn_qwertz_sk</item>
     <item>@xml/latn_qwertz_sq</item>
-    <item>@xml/latn_uoindl_us</item>
     <item>@xml/latn_qzerty_it</item>
+    <item>@xml/latn_uoindl_us</item>
     <item>@xml/latn_workman_us</item>
     <item>@xml/shaw_imperial_en</item>
     <item>@xml/sinhala_phonetic</item>
